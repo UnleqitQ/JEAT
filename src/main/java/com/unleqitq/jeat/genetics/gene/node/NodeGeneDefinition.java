@@ -13,7 +13,7 @@ import java.util.UUID;
 @Accessors (fluent = true)
 @Getter
 @Setter
-public abstract class AbstractNodeGeneDefinition<S extends AbstractNodeGeneDefinition<S, G>, G extends AbstractNodeGene<G, S>>
+public abstract class NodeGeneDefinition<S extends NodeGeneDefinition<S, G>, G extends NodeGene<G, S>>
 	extends GeneDefinition<UUID, S, G> {
 	
 	private final double x;
@@ -21,7 +21,7 @@ public abstract class AbstractNodeGeneDefinition<S extends AbstractNodeGeneDefin
 	@Nullable
 	private String name;
 	
-	protected AbstractNodeGeneDefinition(@NotNull UUID id, double x, boolean input,
+	protected NodeGeneDefinition(@NotNull UUID id, double x, boolean input,
 		@Nullable String name) {
 		super(id);
 		if (GlobalSettings.NODE_X_BOUNDS != GlobalSettings.ErrorHandling.IGNORE) {
@@ -54,8 +54,12 @@ public abstract class AbstractNodeGeneDefinition<S extends AbstractNodeGeneDefin
 		this.name = name;
 	}
 	
-	protected AbstractNodeGeneDefinition(double x, boolean input, @Nullable String name) {
+	protected NodeGeneDefinition(double x, boolean input, @Nullable String name) {
 		this(UUID.randomUUID(), x, input, name);
+	}
+	
+	public boolean canRemove() {
+		return false;
 	}
 	
 }

@@ -115,6 +115,10 @@ public class MutationConfig {
 			 */
 			public double addConnectionChance = 0.08;
 			/**
+			 * The number of attempts to add a connection.
+			 */
+			public int addConnectionAttempts = 100;
+			/**
 			 * The chance of removing a connection.
 			 */
 			public double removeConnectionChance = 0.03;

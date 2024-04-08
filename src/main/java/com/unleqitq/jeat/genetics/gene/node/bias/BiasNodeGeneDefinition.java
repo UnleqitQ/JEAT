@@ -1,6 +1,6 @@
 package com.unleqitq.jeat.genetics.gene.node.bias;
 
-import com.unleqitq.jeat.genetics.gene.node.AbstractNodeGeneDefinition;
+import com.unleqitq.jeat.genetics.gene.node.NodeGeneDefinition;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class BiasNodeGeneDefinition
-	extends AbstractNodeGeneDefinition<BiasNodeGeneDefinition, BiasNodeGene> {
+	extends NodeGeneDefinition<BiasNodeGeneDefinition, BiasNodeGene> {
 	
 	protected BiasNodeGeneDefinition(@NotNull UUID id, double x, @Nullable String name) {
 		super(id, x, true, name);

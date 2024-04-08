@@ -1,6 +1,6 @@
 package com.unleqitq.jeat.genetics.gene.node.input;
 
-import com.unleqitq.jeat.genetics.gene.node.AbstractNodeGeneDefinition;
+import com.unleqitq.jeat.genetics.gene.node.NodeGeneDefinition;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class InputNodeGeneDefinition
-	extends AbstractNodeGeneDefinition<InputNodeGeneDefinition, InputNodeGene> {
+	extends NodeGeneDefinition<InputNodeGeneDefinition, InputNodeGene> {
 	
 	protected InputNodeGeneDefinition(@NotNull UUID id, double x,
 		@Nullable String name) {

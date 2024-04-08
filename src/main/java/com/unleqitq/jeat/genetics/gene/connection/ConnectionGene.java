@@ -2,12 +2,14 @@ package com.unleqitq.jeat.genetics.gene.connection;
 
 import com.unleqitq.jeat.config.MutationConfig;
 import com.unleqitq.jeat.genetics.gene.Gene;
+import com.unleqitq.jeat.genetics.gene.node.NodeGene;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -47,6 +49,16 @@ public class ConnectionGene
 	@NotNull
 	public UUID toId() {
 		return definition().to();
+	}
+	
+	@NotNull
+	public NodeGene<?,?> from() {
+		return Objects.requireNonNull(genome().node(fromId()));
+	}
+	
+	@NotNull
+	public NodeGene<?,?> to() {
+		return Objects.requireNonNull(genome().node(toId()));
 	}
 	
 	@Override

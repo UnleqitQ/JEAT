@@ -3,7 +3,7 @@ package com.unleqitq.jeat.genetics.gene.node.working;
 import com.unleqitq.jeat.activationFunction.ActivationFunction;
 import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.config.MutationConfig;
-import com.unleqitq.jeat.genetics.gene.node.AbstractNodeGene;
+import com.unleqitq.jeat.genetics.gene.node.NodeGene;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ import java.util.Random;
 @Accessors (fluent = true)
 @Getter
 @Setter
-public class WorkingNodeGene extends AbstractNodeGene<WorkingNodeGene, WorkingNodeGeneDefinition> {
+public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDefinition> {
 	
 	private ActivationFunction activationFunction;
 	private AggregationFunction aggregationFunction;
@@ -23,6 +23,18 @@ public class WorkingNodeGene extends AbstractNodeGene<WorkingNodeGene, WorkingNo
 	
 	public WorkingNodeGene(@NotNull Genome genome, @NotNull WorkingNodeGeneDefinition definition) {
 		super(genome, definition);
+		if (definition.lockedActivationFunction() != null) {
+			activationFunction = definition.lockedActivationFunction();
+		}
+		else {
+			activationFunction = jeat().defaultActivationFunction();
+		}
+		if (definition.lockedAggregationFunction() != null) {
+			aggregationFunction = definition.lockedAggregationFunction();
+		}
+		else {
+			aggregationFunction = jeat().defaultAggregationFunction();
+		}
 	}
 	
 	@Override
@@ -35,7 +47,8 @@ public class WorkingNodeGene extends AbstractNodeGene<WorkingNodeGene, WorkingNo
 		}
 		if (definition().lockedAggregationFunction() == null &&
 			rnd.nextDouble() < config.aggregation.changeAggregationFunctionChance) {
-			aggregationFunction = jeat().aggregationFunctions().getRandomElement(rnd, aggregationFunction);
+			aggregationFunction =
+				jeat().aggregationFunctions().getRandomElement(rnd, aggregationFunction);
 		}
 		if (definition().canDisable() && rnd.nextDouble() < config.structure.toggleNodeChance) {
 			enabled = !enabled;
