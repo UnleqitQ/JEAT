@@ -1,7 +1,11 @@
 package com.unleqitq.jeat;
 
+import com.unleqitq.jeat.activationFunction.ActivationFunction;
+import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.config.JeatConfig;
+import com.unleqitq.jeat.utils.RandomElementList;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +19,18 @@ import java.util.Random;
 @Accessors (fluent = true)
 @Getter
 public class Jeat {
+	
+	@Setter
+	@NotNull
+	private ActivationFunction defaultActivationFunction = v -> v;
+	@Setter
+	@NotNull
+	private AggregationFunction defaultAggregationFunction =
+		vs -> vs.stream().mapToDouble(v -> v).sum();
+	@NotNull
+	private final RandomElementList<ActivationFunction> activationFunctions = new RandomElementList<>();
+	@NotNull
+	private final RandomElementList<AggregationFunction> aggregationFunctions = new RandomElementList<>();
 	
 	@NotNull
 	private final JeatConfig config;

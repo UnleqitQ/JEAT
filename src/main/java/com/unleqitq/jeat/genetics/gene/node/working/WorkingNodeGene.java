@@ -29,11 +29,13 @@ public class WorkingNodeGene extends AbstractNodeGene<WorkingNodeGene, WorkingNo
 	public void mutate() {
 		MutationConfig.NodeMutationConfig config = jeat().config().mutation.node;
 		Random rnd = jeat().random();
-		if (definition().lockedActivationFunction() == null && rnd.nextDouble() < config.activation.changeActivationFunctionChance) {
-			// TODO: Implement activation function mutation
+		if (definition().lockedActivationFunction() == null &&
+			rnd.nextDouble() < config.activation.changeActivationFunctionChance) {
+			activationFunction = jeat().activationFunctions().getRandomElement(rnd, activationFunction);
 		}
-		if (definition().lockedAggregationFunction() == null && rnd.nextDouble() < config.aggregation.changeAggregationFunctionChance) {
-			// TODO: Implement aggregation function mutation
+		if (definition().lockedAggregationFunction() == null &&
+			rnd.nextDouble() < config.aggregation.changeAggregationFunctionChance) {
+			aggregationFunction = jeat().aggregationFunctions().getRandomElement(rnd, aggregationFunction);
 		}
 		if (definition().canDisable() && rnd.nextDouble() < config.structure.toggleNodeChance) {
 			enabled = !enabled;
