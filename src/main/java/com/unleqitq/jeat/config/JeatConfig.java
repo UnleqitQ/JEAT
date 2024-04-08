@@ -18,4 +18,10 @@ public class JeatConfig {
 	@NotNull
 	public InitialStructureConfig initialStructure;
 	
+	/**
+	 * The configuration for the crossover process.
+	 */
+	@NotNull
+	public CrossoverConfig crossover;
+	
 }

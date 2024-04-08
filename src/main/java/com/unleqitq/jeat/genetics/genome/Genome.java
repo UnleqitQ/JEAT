@@ -1,6 +1,7 @@
 package com.unleqitq.jeat.genetics.genome;
 
 import com.unleqitq.jeat.Jeat;
+import com.unleqitq.jeat.config.CrossoverConfig;
 import com.unleqitq.jeat.config.InitialStructureConfig;
 import com.unleqitq.jeat.config.MutationConfig;
 import com.unleqitq.jeat.genetics.gene.connection.ConnectionGene;
@@ -84,8 +85,8 @@ public class Genome implements Comparable<Genome> {
 				if (connections.containsKey(id)) {
 					continue;
 				}
-				ConnectionGene con = jeat.connectionDefinitions()
-					.createGene(id, this, () -> new ConnectionGeneDefinition(id));
+				ConnectionGene con =
+					jeat.connectionDefinitions().createGene(id, this, () -> new ConnectionGeneDefinition(id));
 				addConnection(con);
 			}
 		}
@@ -224,14 +225,15 @@ public class Genome implements Comparable<Genome> {
 						cons.forEach(c -> {
 							ConnectionIdentifier id = new ConnectionIdentifier(c.from().id(), n2.id());
 							ConnectionGene conGene = jeat.connectionDefinitions()
-								.createGene(id, this, () -> new ConnectionGeneDefinition(id)).weight(c.weight());
+								.createGene(id, this, () -> new ConnectionGeneDefinition(id))
+								.weight(c.weight());
 							addConnection(conGene);
 							removeConnection(c.id());
 						});
 						ConnectionGene conGene = jeat.connectionDefinitions()
 							.createGene(new ConnectionIdentifier(n2.id(), n1.id()), this,
-								() -> new ConnectionGeneDefinition(
-									new ConnectionIdentifier(n2.id(), n1.id()))).weight(1);
+								() -> new ConnectionGeneDefinition(new ConnectionIdentifier(n2.id(), n1.id())))
+							.weight(1);
 						addConnection(conGene);
 					}
 				}
@@ -250,14 +252,15 @@ public class Genome implements Comparable<Genome> {
 						cons.forEach(c -> {
 							ConnectionIdentifier id = new ConnectionIdentifier(n2.id(), c.to().id());
 							ConnectionGene conGene = jeat.connectionDefinitions()
-								.createGene(id, this, () -> new ConnectionGeneDefinition(id)).weight(c.weight());
+								.createGene(id, this, () -> new ConnectionGeneDefinition(id))
+								.weight(c.weight());
 							addConnection(conGene);
 							removeConnection(c.id());
 						});
 						ConnectionGene conGene = jeat.connectionDefinitions()
 							.createGene(new ConnectionIdentifier(n1.id(), n2.id()), this,
-								() -> new ConnectionGeneDefinition(
-									new ConnectionIdentifier(n1.id(), n2.id()))).weight(1);
+								() -> new ConnectionGeneDefinition(new ConnectionIdentifier(n1.id(), n2.id())))
+							.weight(1);
 						addConnection(conGene);
 					}
 				}
@@ -274,11 +277,13 @@ public class Genome implements Comparable<Genome> {
 					addNode(n2);
 					ConnectionIdentifier id1 = new ConnectionIdentifier(from.id(), n2.id());
 					ConnectionGene conGene1 = jeat.connectionDefinitions()
-						.createGene(id1, this, () -> new ConnectionGeneDefinition(id1)).weight(1);
+						.createGene(id1, this, () -> new ConnectionGeneDefinition(id1))
+						.weight(1);
 					addConnection(conGene1);
 					ConnectionIdentifier id2 = new ConnectionIdentifier(n2.id(), to.id());
 					ConnectionGene conGene2 = jeat.connectionDefinitions()
-						.createGene(id2, this, () -> new ConnectionGeneDefinition(id2)).weight(con.weight());
+						.createGene(id2, this, () -> new ConnectionGeneDefinition(id2))
+						.weight(con.weight());
 					addConnection(conGene2);
 					removeConnection(con.id());
 				}
@@ -314,6 +319,70 @@ public class Genome implements Comparable<Genome> {
 		Genome genome = copyId ? new Genome(jeat, id) : new Genome(jeat);
 		nodes.values().forEach(node -> genome.addNode(node.copy(genome)));
 		connections.values().forEach(con -> genome.addConnection(con.copy(genome)));
+		return genome;
+	}
+	
+	@NotNull
+	public Genome crossover(@NotNull Genome other) {
+		Random rnd = jeat.random();
+		CrossoverConfig cfg = jeat.config().crossover;
+		Genome genome = new Genome(jeat);
+		List<ConnectionIdentifier> createdConnections = new ArrayList<>();
+		{
+			Set<UUID> overlappingNodes = new HashSet<>();
+			for (NodeGene<?, ?> node : nodes.values()) {
+				if (other.nodes.containsKey(node.id())) {
+					overlappingNodes.add(node.id());
+				}
+				else {
+					genome.addNode(node.copy(genome));
+				}
+			}
+			for (NodeGene<?, ?> node : other.nodes.values()) {
+				if (!overlappingNodes.contains(node.id())) {
+					genome.addNode(node.copy(genome));
+				}
+			}
+			for (UUID id : overlappingNodes) {
+				boolean fromThis = rnd.nextDouble() < cfg.geneInheritanceProbability;
+				NodeGene<?, ?> node = fromThis ? nodes.get(id) : other.nodes.get(id);
+				genome.addNode(node.copy(genome));
+			}
+		}
+		{
+			Set<ConnectionIdentifier> overlappingConnections = new HashSet<>();
+			for (ConnectionGene con : connections.values()) {
+				if (other.connections.containsKey(con.id())) {
+					overlappingConnections.add(con.id());
+				}
+				else {
+					genome.addConnection(con.copy(genome));
+					createdConnections.add(con.id());
+				}
+			}
+			for (ConnectionGene con : other.connections.values()) {
+				if (!overlappingConnections.contains(con.id())) {
+					genome.addConnection(con.copy(genome));
+					createdConnections.add(con.id());
+				}
+			}
+			for (ConnectionIdentifier id : overlappingConnections) {
+				boolean fromThis = rnd.nextDouble() < cfg.geneInheritanceProbability;
+				ConnectionGene con = fromThis ? connections.get(id) : other.connections.get(id);
+				genome.addConnection(con.copy(genome));
+				createdConnections.add(con.id());
+			}
+		}
+		
+		if (cfg.thinOutConnections) {
+			int cnt =
+				(int) (Math.min(cfg.thinOutPercentage, 1) * createdConnections.size() * rnd.nextDouble());
+			for (int i = 0; i < cnt; i++) {
+				ConnectionIdentifier id = createdConnections.get(rnd.nextInt(createdConnections.size()));
+				genome.removeConnection(id);
+			}
+		}
+		
 		return genome;
 	}
 	
