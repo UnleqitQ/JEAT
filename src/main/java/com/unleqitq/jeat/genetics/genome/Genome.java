@@ -14,6 +14,7 @@ import com.unleqitq.jeat.genetics.gene.node.input.InputNodeGeneDefinition;
 import com.unleqitq.jeat.genetics.gene.node.working.WorkingNodeGene;
 import com.unleqitq.jeat.genetics.gene.node.working.WorkingNodeGeneDefinition;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +37,8 @@ public class Genome implements Comparable<Genome> {
 	private final Map<String, NodeGene<?, ?>> namedNodes = new HashMap<>();
 	@NotNull
 	private final Map<ConnectionIdentifier, ConnectionGene> connections = new TreeMap<>();
+	@Setter
+	private double fitness = 0;
 	
 	public Genome(@NotNull Jeat jeat, @NotNull UUID id) {
 		this.jeat = jeat;
