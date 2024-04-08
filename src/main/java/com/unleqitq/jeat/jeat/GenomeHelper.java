@@ -1,6 +1,7 @@
 package com.unleqitq.jeat.jeat;
 
 import com.unleqitq.jeat.Jeat;
+import com.unleqitq.jeat.calculator.Calculator;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import com.unleqitq.jeat.genetics.genome.GenomeStore;
 import com.unleqitq.jeat.utils.ListDirection;
@@ -9,7 +10,9 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 @Accessors (fluent = true)
@@ -77,7 +80,6 @@ public class GenomeHelper {
 	public List<Genome> createGenomes(int count) {
 		return createGenomes(count, true);
 	}
-	
 	
 	/**
 	 * Removes the worst genomes from the genome store.
@@ -221,6 +223,21 @@ public class GenomeHelper {
 	@NotNull
 	public List<Genome> cross(int count, boolean addToStore, boolean swapParents) {
 		return cross(count, addToStore, swapParents, (g) -> 1.0);
+	}
+	
+	/**
+	 * Creates a Map of calculators for the genomes in the genome store.
+	 * @return The created calculators.
+	 */
+	@NotNull
+	public Map<Genome, Calculator> createCalculators() {
+		Map<Genome, Calculator> calculators = new HashMap<>();
+		store.genomes().forEach(genome -> calculators.put(genome, Calculator.create(genome)));
+		return calculators;
+	}
+	
+	public void clearFitness() {
+		store.genomes().forEach(genome -> genome.fitness(0));
 	}
 	
 }

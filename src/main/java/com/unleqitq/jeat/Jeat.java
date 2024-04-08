@@ -97,5 +97,4 @@ public class Jeat {
 		this.config = config;
 	}
 	
-	
 }
