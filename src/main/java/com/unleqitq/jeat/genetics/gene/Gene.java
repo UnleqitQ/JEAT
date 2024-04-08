@@ -1,5 +1,6 @@
 package com.unleqitq.jeat.genetics.gene;
 
+import com.unleqitq.jeat.Jeat;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -17,6 +18,8 @@ public abstract class Gene<I extends Comparable<I>, S extends Gene<I, S, D>, D e
 	implements Comparable<S> {
 	
 	@NotNull
+	private final Jeat jeat;
+	@NotNull
 	private final Genome genome;
 	
 	@NotNull
@@ -24,6 +27,7 @@ public abstract class Gene<I extends Comparable<I>, S extends Gene<I, S, D>, D e
 	
 	protected Gene(@NotNull Genome genome, @NotNull D definition) {
 		this.genome = genome;
+		this.jeat = genome.jeat();
 		this.definition = definition;
 	}
 	

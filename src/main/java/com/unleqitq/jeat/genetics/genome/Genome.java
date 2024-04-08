@@ -1,5 +1,6 @@
 package com.unleqitq.jeat.genetics.genome;
 
+import com.unleqitq.jeat.Jeat;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
@@ -11,13 +12,17 @@ import java.util.UUID;
 public class Genome implements Comparable<Genome> {
 	
 	@NotNull
+	private final Jeat jeat;
+	@NotNull
 	private final UUID id;
 	
-	public Genome() {
+	public Genome(@NotNull Jeat jeat) {
+		this.jeat = jeat;
 		this.id = UUID.randomUUID();
 	}
 	
-	public Genome(@NotNull UUID id) {
+	public Genome(@NotNull Jeat jeat, @NotNull UUID id) {
+		this.jeat = jeat;
 		this.id = id;
 	}
 	
