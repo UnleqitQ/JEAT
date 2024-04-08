@@ -59,7 +59,7 @@ public class Genome implements Comparable<Genome> {
 		List<UUID> outputNodes = new ArrayList<>();
 		{
 			NodeGene<?, ?> node = jeat.nodeDefinitions()
-				.createGene("bias", this, () -> new BiasNodeGeneDefinition(-1, "bias"));
+				.createGene("bias", this, () -> new BiasNodeGeneDefinition(0, "bias"));
 			addNode(node);
 			inputNodes.add(node.id());
 		}

@@ -142,6 +142,54 @@ public class GenomeStore {
 			.orElse(null);
 	}
 	
+	/**
+	 * Returns the best genomes in the store
+	 *
+	 * @param offset the offset from the best genome
+	 * @param count  the number of genomes to return
+	 * @return the best genomes
+	 */
+	public List<Genome> best(int offset, int count) {
+		if (sorted) {
+			if (direction == ListDirection.DESCENDING) {
+				return Collections.unmodifiableList(genomesList.subList(offset, offset + count));
+			}
+			else {
+				return Collections.unmodifiableList(genomesList.subList(genomesList.size() - offset - count,
+					genomesList.size() - offset));
+			}
+		}
+		return genomesList.stream()
+			.sorted(Comparator.comparingDouble(Genome::fitness))
+			.skip(offset)
+			.limit(count)
+			.toList();
+	}
+	
+	/**
+	 * Returns the worst genomes in the store
+	 *
+	 * @param offset the offset from the worst genome
+	 * @param count  the number of genomes to return
+	 * @return the worst genomes
+	 */
+	public List<Genome> worst(int offset, int count) {
+		if (sorted) {
+			if (direction == ListDirection.DESCENDING) {
+				return Collections.unmodifiableList(genomesList.subList(genomesList.size() - offset - count,
+					genomesList.size() - offset));
+			}
+			else {
+				return Collections.unmodifiableList(genomesList.subList(offset, offset + count));
+			}
+		}
+		return genomesList.stream()
+			.sorted(Comparator.comparingDouble(g -> -g.fitness()))
+			.skip(offset)
+			.limit(count)
+			.toList();
+	}
+	
 	public void addAll(@NotNull Collection<Genome> genomes) {
 		genomes.forEach(this::add);
 	}
