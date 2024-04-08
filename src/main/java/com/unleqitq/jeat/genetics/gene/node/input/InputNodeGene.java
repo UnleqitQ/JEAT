@@ -18,8 +18,7 @@ public class InputNodeGene extends AbstractNodeGene<InputNodeGene, InputNodeGene
 	
 	@Override
 	public @NotNull InputNodeGene copy(@NotNull Genome genome) {
-		InputNodeGene copy = new InputNodeGene(genome, definition());
-		return copy;
+		return new InputNodeGene(genome, definition());
 	}
 	
 }
