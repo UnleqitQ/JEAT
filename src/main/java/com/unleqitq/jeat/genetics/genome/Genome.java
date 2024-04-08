@@ -133,7 +133,8 @@ public class Genome implements Comparable<Genome> {
 						});
 						ConnectionGene conGene = ((ConnectionGene) jeat.connectionDefinitions()
 							.createGene(new ConnectionIdentifier(n2.id(), n1.id()), this,
-								() -> new ConnectionGeneDefinition(new ConnectionIdentifier(n2.id(), n1.id())))).weight(1);
+								() -> new ConnectionGeneDefinition(
+									new ConnectionIdentifier(n2.id(), n1.id())))).weight(1);
 						connections.put(conGene.id(), conGene);
 					}
 				}
@@ -158,7 +159,8 @@ public class Genome implements Comparable<Genome> {
 						});
 						ConnectionGene conGene = ((ConnectionGene) jeat.connectionDefinitions()
 							.createGene(new ConnectionIdentifier(n1.id(), n2.id()), this,
-								() -> new ConnectionGeneDefinition(new ConnectionIdentifier(n1.id(), n2.id())))).weight(1);
+								() -> new ConnectionGeneDefinition(
+									new ConnectionIdentifier(n1.id(), n2.id())))).weight(1);
 						connections.put(conGene.id(), conGene);
 					}
 				}
@@ -208,6 +210,14 @@ public class Genome implements Comparable<Genome> {
 			return null;
 		}
 		return new ArrayList<>(connections.values()).get(jeat.random().nextInt(connections.size()));
+	}
+	
+	@NotNull
+	public Genome copy(boolean copyId) {
+		Genome genome = copyId ? new Genome(jeat, id) : new Genome(jeat);
+		nodes.values().forEach(n -> genome.nodes.put(n.id(), n.copy(genome)));
+		connections.values().forEach(c -> genome.connections.put(c.id(), c.copy(genome)));
+		return genome;
 	}
 	
 }
