@@ -16,6 +16,7 @@ import com.unleqitq.jeat.genetics.gene.node.working.WorkingNodeGeneDefinition;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +50,9 @@ public class Genome implements Comparable<Genome> {
 		this(jeat, UUID.randomUUID());
 	}
 	
-	public void init() {
+	@NotNull
+	@Contract (" -> this")
+	public Genome init() {
 		Random rnd = jeat.random();
 		InitialStructureConfig cfg = jeat.config().initialStructure;
 		List<UUID> inputNodes = new ArrayList<>();
@@ -93,6 +96,7 @@ public class Genome implements Comparable<Genome> {
 				addConnection(con);
 			}
 		}
+		return this;
 	}
 	
 	private void addNode(@NotNull NodeGene<?, ?> node) {

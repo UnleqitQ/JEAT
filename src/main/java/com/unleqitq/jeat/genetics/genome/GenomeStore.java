@@ -1,8 +1,10 @@
 package com.unleqitq.jeat.genetics.genome;
 
+import com.unleqitq.jeat.internal.InternalUse;
 import com.unleqitq.jeat.utils.ListDirection;
 import com.unleqitq.jeat.utils.tuple.Pair;
 import com.unleqitq.jeat.utils.tuple.Tuple;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,11 +13,13 @@ import java.util.function.Function;
 
 public class GenomeStore {
 	
+	@Getter (onMethod_ = {@InternalUse})
 	@NotNull
 	private final Map<UUID, Genome> genomes = new HashMap<>();
 	/**
 	 * Used for sorting genomes by fitness, by using a list it doesn't need to be sorted every time
 	 */
+	@Getter (onMethod_ = {@InternalUse})
 	@NotNull
 	private final List<Genome> genomesList = new ArrayList<>();
 	private boolean sorted = false;
@@ -137,6 +141,10 @@ public class GenomeStore {
 			.skip(offset)
 			.findFirst()
 			.orElse(null);
+	}
+	
+	public void addAll(@NotNull Collection<Genome> genomes) {
+		genomes.forEach(this::add);
 	}
 	
 }
