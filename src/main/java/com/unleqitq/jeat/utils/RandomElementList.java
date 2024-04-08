@@ -43,7 +43,7 @@ public class RandomElementList<T> {
 				return element.element();
 			}
 		}
-		return T;
+		return defaultValue;
 	}
 	
 	public record Element<T>(T element, double probability) {}
