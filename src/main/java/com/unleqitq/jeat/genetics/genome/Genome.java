@@ -148,9 +148,21 @@ public class Genome implements Comparable<Genome> {
 		return id.hashCode();
 	}
 	
+	/**
+	 * Compares this genome to another genome by their id. This is useful when using a {@link TreeSet} or {@link TreeMap}.<br>
+	 * To compare by fitness use {@link #compareByFitness(Genome)}.
+	 *
+	 * @param o the other genome
+	 * @return a negative integer, zero, or a positive integer as this genome is less than, equal to, or greater than the
+	 * other genome.
+	 */
 	@Override
 	public int compareTo(@NotNull Genome o) {
 		return id.compareTo(o.id);
+	}
+	
+	public int compareByFitness(@NotNull Genome o) {
+		return Double.compare(fitness, o.fitness);
 	}
 	
 	@Nullable

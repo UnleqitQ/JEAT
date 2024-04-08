@@ -110,7 +110,7 @@ public class GenomeStore {
 	}
 	
 	public void sort(@NotNull ListDirection direction) {
-		sort(direction, Comparator.comparingDouble(Genome::fitness));
+		sort(direction, Genome::compareByFitness);
 	}
 	
 	public void sort() {
