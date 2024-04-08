@@ -2,12 +2,15 @@ package com.unleqitq.jeat.genetics.gene.node.working;
 
 import com.unleqitq.jeat.activationFunction.ActivationFunction;
 import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
+import com.unleqitq.jeat.config.MutationConfig;
 import com.unleqitq.jeat.genetics.gene.node.AbstractNodeGene;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Random;
 
 @Accessors (fluent = true)
 @Getter
@@ -23,10 +26,27 @@ public class WorkingNodeGene extends AbstractNodeGene<WorkingNodeGene, WorkingNo
 	}
 	
 	@Override
+	public void mutate() {
+		MutationConfig.NodeMutationConfig config = jeat().config().mutation.node;
+		Random rnd = jeat().random();
+		if (definition().lockedActivationFunction() == null && rnd.nextDouble() < config.activation.changeActivationFunctionChance) {
+			// TODO: Implement activation function mutation
+		}
+		if (definition().lockedAggregationFunction() == null && rnd.nextDouble() < config.aggregation.changeAggregationFunctionChance) {
+			// TODO: Implement aggregation function mutation
+		}
+		if (definition().canDisable() && rnd.nextDouble() < config.structure.toggleNodeChance) {
+			enabled = !enabled;
+		}
+	}
+	
+	@Override
 	@NotNull
 	public WorkingNodeGene copy(@NotNull Genome genome) {
 		WorkingNodeGene copy = new WorkingNodeGene(genome, definition());
 		copy.enabled = enabled;
+		copy.activationFunction = activationFunction;
+		copy.aggregationFunction = aggregationFunction;
 		return copy;
 	}
 	

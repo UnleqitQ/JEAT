@@ -25,7 +25,7 @@ public class MutationConfig {
 		 * The chance of mutating the structure of a genome (adding, removing or toggling nodes).
 		 */
 		@NotNull
-		public NodeStructureMutationConfig nodeStructure;
+		public NodeStructureMutationConfig structure;
 		/**
 		 * The chance of mutating the aggregation function of a node.
 		 */
@@ -44,7 +44,7 @@ public class MutationConfig {
 			 * The chance of adding a node in different ways.
 			 */
 			@NotNull
-			public AddNodeMutationConfig addNode;
+			public AddNodeMutationConfig add;
 			
 			/**
 			 * The chance of removing a node.
@@ -100,7 +100,7 @@ public class MutationConfig {
 		 * The chance of mutating the structure of a genome (adding, removing or toggling connections).
 		 */
 		@NotNull
-		public ConnectionStructureMutationConfig connectionStructure;
+		public ConnectionStructureMutationConfig structure;
 		/**
 		 * The chance of mutating the weight of a connection.
 		 */

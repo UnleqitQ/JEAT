@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Random;
+
 /**
  * Main class of the Java NEAT Port.
  *
@@ -16,6 +18,8 @@ public class Jeat {
 	
 	@NotNull
 	private final JeatConfig config;
+	@NotNull
+	private final Random random = new Random();
 	
 	public Jeat(@NotNull JeatConfig config) {
 		this.config = config;

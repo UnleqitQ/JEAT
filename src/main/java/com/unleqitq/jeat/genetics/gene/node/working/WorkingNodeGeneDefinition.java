@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-@Accessors
+@Accessors (fluent = true)
 @Getter
 @Setter
 public class WorkingNodeGeneDefinition
@@ -22,6 +22,7 @@ public class WorkingNodeGeneDefinition
 	private ActivationFunction lockedActivationFunction;
 	@Nullable
 	private AggregationFunction lockedAggregationFunction;
+	private boolean canDisable = true;
 	
 	public WorkingNodeGeneDefinition(@NotNull UUID id, double x, @Nullable String name) {
 		super(id, x, false, name);
@@ -34,7 +35,14 @@ public class WorkingNodeGeneDefinition
 	@Override
 	@NotNull
 	public WorkingNodeGene createGene(@NotNull Genome genome) {
-		return new WorkingNodeGene(genome, this);
+		WorkingNodeGene gene = new WorkingNodeGene(genome, this);
+		if (lockedActivationFunction != null) {
+			gene.activationFunction(lockedActivationFunction);
+		}
+		if (lockedAggregationFunction != null) {
+			gene.aggregationFunction(lockedAggregationFunction);
+		}
+		return gene;
 	}
 	
 }

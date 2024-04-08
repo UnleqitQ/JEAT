@@ -10,6 +10,6 @@ public class JeatConfig {
 	 * The configuration for the mutation process.
 	 */
 	@NotNull
-	public MutationConfig mutationConfig;
+	public MutationConfig mutation;
 	
 }

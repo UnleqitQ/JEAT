@@ -54,6 +54,8 @@ public abstract class Gene<I extends Comparable<I>, S extends Gene<I, S, D>, D e
 		return definition.compareTo(o.definition());
 	}
 	
+	public abstract void mutate();
+	
 	@NotNull
 	public abstract S copy(@NotNull Genome genome);
 	

@@ -3,6 +3,7 @@ package com.unleqitq.jeat.genetics.gene.node;
 import com.unleqitq.jeat.genetics.gene.GeneDefinition;
 import com.unleqitq.jeat.internal.GlobalSettings;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,13 +12,14 @@ import java.util.UUID;
 
 @Accessors (fluent = true)
 @Getter
+@Setter
 public abstract class AbstractNodeGeneDefinition<S extends AbstractNodeGeneDefinition<S, G>, G extends AbstractNodeGene<G, S>>
 	extends GeneDefinition<UUID, S, G> {
 	
-	protected final double x;
-	protected final boolean input;
+	private final double x;
+	private final boolean input;
 	@Nullable
-	protected final String name;
+	private String name;
 	
 	protected AbstractNodeGeneDefinition(@NotNull UUID id, double x, boolean input,
 		@Nullable String name) {

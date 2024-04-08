@@ -17,6 +17,11 @@ public class InputNodeGene extends AbstractNodeGene<InputNodeGene, InputNodeGene
 	}
 	
 	@Override
+	public void mutate() {
+		// Input nodes are not mutable
+	}
+	
+	@Override
 	public @NotNull InputNodeGene copy(@NotNull Genome genome) {
 		return new InputNodeGene(genome, definition());
 	}

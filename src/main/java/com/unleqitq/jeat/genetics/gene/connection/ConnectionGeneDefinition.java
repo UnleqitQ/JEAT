@@ -20,7 +20,13 @@ public class ConnectionGeneDefinition
 	@Override
 	@NotNull
 	public ConnectionGene createGene(@NotNull Genome genome) {
-		return new ConnectionGene(genome, this);
+		return this.createGene(genome,
+			genome.jeat().config().mutation.connection.structure.newConnectionWeightRange *
+				genome.jeat().random().nextDouble(-1, 1));
+	}
+	
+	public ConnectionGene createGene(@NotNull Genome genome, double weight) {
+		return new ConnectionGene(genome, this).weight(weight);
 	}
 	
 	public UUID from() {

@@ -17,6 +17,11 @@ public class BiasNodeGene extends AbstractNodeGene<BiasNodeGene, BiasNodeGeneDef
 	}
 	
 	@Override
+	public void mutate() {
+		// Bias nodes are not mutable
+	}
+	
+	@Override
 	public @NotNull BiasNodeGene copy(@NotNull Genome genome) {
 		return new BiasNodeGene(genome, definition());
 	}
