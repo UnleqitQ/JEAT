@@ -1,6 +1,5 @@
 package com.unleqitq.jeat.genetics.genome;
 
-import com.unleqitq.jeat.internal.InternalUse;
 import com.unleqitq.jeat.utils.ListDirection;
 import com.unleqitq.jeat.utils.tuple.Pair;
 import com.unleqitq.jeat.utils.tuple.Tuple;
@@ -13,13 +12,13 @@ import java.util.function.Function;
 
 public class GenomeStore {
 	
-	@Getter (onMethod_ = {@InternalUse})
+	@Getter
 	@NotNull
 	private final Map<UUID, Genome> genomes = new HashMap<>();
 	/**
 	 * Used for sorting genomes by fitness, by using a list it doesn't need to be sorted every time
 	 */
-	@Getter (onMethod_ = {@InternalUse})
+	@Getter
 	@NotNull
 	private final List<Genome> genomesList = new ArrayList<>();
 	private boolean sorted = false;
