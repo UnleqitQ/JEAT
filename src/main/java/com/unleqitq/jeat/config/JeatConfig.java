@@ -12,4 +12,10 @@ public class JeatConfig {
 	@NotNull
 	public MutationConfig mutation;
 	
+	/**
+	 * The configuration for the initial structure of the genome.
+	 */
+	@NotNull
+	public InitialStructureConfig initialStructure;
+	
 }

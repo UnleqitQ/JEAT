@@ -17,6 +17,7 @@ public class GlobalSettings {
 	public static final String AUTHOR = "UnleqitQ";
 	
 	public static final ErrorHandling NODE_X_BOUNDS = ErrorHandling.WARN;
+	public static final ErrorHandling BIAS_ALREADY_EXISTS = ErrorHandling.THROW;
 	
 	public enum ErrorHandling {
 		THROW,

@@ -21,7 +21,7 @@ public class InputNodeGeneDefinition
 		super(id, x, true, name);
 	}
 	
-	protected InputNodeGeneDefinition(double x, @Nullable String name) {
+	public InputNodeGeneDefinition(double x, @Nullable String name) {
 		super(x, true, name);
 	}
 	

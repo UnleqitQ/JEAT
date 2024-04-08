@@ -20,7 +20,7 @@ public class BiasNodeGeneDefinition
 		super(id, x, true, name);
 	}
 	
-	protected BiasNodeGeneDefinition(double x, @Nullable String name) {
+	public BiasNodeGeneDefinition(double x, @Nullable String name) {
 		super(x, true, name);
 	}
 	

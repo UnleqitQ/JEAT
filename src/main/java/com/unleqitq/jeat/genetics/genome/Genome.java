@@ -1,11 +1,15 @@
 package com.unleqitq.jeat.genetics.genome;
 
 import com.unleqitq.jeat.Jeat;
+import com.unleqitq.jeat.config.InitialStructureConfig;
 import com.unleqitq.jeat.config.MutationConfig;
 import com.unleqitq.jeat.genetics.gene.connection.ConnectionGene;
 import com.unleqitq.jeat.genetics.gene.connection.ConnectionGeneDefinition;
 import com.unleqitq.jeat.genetics.gene.connection.ConnectionIdentifier;
 import com.unleqitq.jeat.genetics.gene.node.NodeGene;
+import com.unleqitq.jeat.genetics.gene.node.bias.BiasNodeGene;
+import com.unleqitq.jeat.genetics.gene.node.bias.BiasNodeGeneDefinition;
+import com.unleqitq.jeat.genetics.gene.node.input.InputNodeGeneDefinition;
 import com.unleqitq.jeat.genetics.gene.node.working.WorkingNodeGene;
 import com.unleqitq.jeat.genetics.gene.node.working.WorkingNodeGeneDefinition;
 import lombok.Getter;
@@ -23,19 +27,107 @@ public class Genome implements Comparable<Genome> {
 	private final Jeat jeat;
 	@NotNull
 	private final UUID id;
+	@Nullable
+	private BiasNodeGene bias;
 	@NotNull
 	private final Map<UUID, NodeGene<?, ?>> nodes = new TreeMap<>();
 	@NotNull
+	private final Map<String, NodeGene<?, ?>> namedNodes = new HashMap<>();
+	@NotNull
 	private final Map<ConnectionIdentifier, ConnectionGene> connections = new TreeMap<>();
-	
-	public Genome(@NotNull Jeat jeat) {
-		this.jeat = jeat;
-		this.id = UUID.randomUUID();
-	}
 	
 	public Genome(@NotNull Jeat jeat, @NotNull UUID id) {
 		this.jeat = jeat;
 		this.id = id;
+	}
+	
+	public Genome(@NotNull Jeat jeat) {
+		this(jeat, UUID.randomUUID());
+	}
+	
+	public void init() {
+		Random rnd = jeat.random();
+		InitialStructureConfig cfg = jeat.config().initialStructure;
+		List<UUID> inputNodes = new ArrayList<>();
+		List<UUID> outputNodes = new ArrayList<>();
+		{
+			NodeGene<?, ?> node = jeat.nodeDefinitions()
+				.createGene("bias", this, () -> new BiasNodeGeneDefinition(-1, "bias"));
+			addNode(node);
+			inputNodes.add(node.id());
+		}
+		for (InitialStructureConfig.InputNodeConfig nc : cfg.inputNodes) {
+			NodeGene<?, ?> node = jeat.nodeDefinitions()
+				.createGene(nc.name, this, () -> new InputNodeGeneDefinition(nc.x, nc.name));
+			addNode(node);
+			inputNodes.add(node.id());
+		}
+		List<ConnectionIdentifier> possibleConnections = new ArrayList<>();
+		for (InitialStructureConfig.OutputNodeConfig nc : cfg.outputNodes) {
+			NodeGene<?, ?> node = jeat.nodeDefinitions()
+				.createGene(nc.name, this,
+					() -> new WorkingNodeGeneDefinition(nc.x, nc.name).removable(false)
+						.lockedActivationFunction(nc.lockedActivationFunction)
+						.lockedAggregationFunction(nc.lockedAggregationFunction)
+						.canDisable(nc.canDisable));
+			addNode(node);
+			outputNodes.add(node.id());
+			for (UUID input : inputNodes) {
+				possibleConnections.add(new ConnectionIdentifier(input, node.id()));
+			}
+		}
+		{
+			int cnt = (int) (cfg.connectionDensity * possibleConnections.size());
+			for (int i = 0; i < cnt; i++) {
+				ConnectionIdentifier id =
+					possibleConnections.remove(rnd.nextInt(possibleConnections.size()));
+				if (connections.containsKey(id)) {
+					continue;
+				}
+				ConnectionGene con = jeat.connectionDefinitions()
+					.createGene(id, this, () -> new ConnectionGeneDefinition(id));
+				addConnection(con);
+			}
+		}
+	}
+	
+	private void addNode(@NotNull NodeGene<?, ?> node) {
+		if (node instanceof BiasNodeGene) {
+			if (bias != null) {
+				throw new IllegalStateException("Bias node already exists");
+			}
+			bias = (BiasNodeGene) node;
+		}
+		nodes.put(node.id(), node);
+		if (node.name() != null) {
+			namedNodes.put(node.name(), node);
+		}
+	}
+	
+	private void addConnection(@NotNull ConnectionGene connection) {
+		connections.put(connection.id(), connection);
+	}
+	
+	private void removeNode(@NotNull UUID id) {
+		NodeGene<?, ?> node = nodes.get(id);
+		if (node != null) {
+			removeNode(node);
+		}
+	}
+	
+	private void removeNode(@NotNull NodeGene<?, ?> node) {
+		nodes.remove(node.id());
+		if (node.name() != null) {
+			namedNodes.remove(node.name());
+		}
+	}
+	
+	private void removeConnection(@NotNull ConnectionIdentifier id) {
+		connections.remove(id);
+	}
+	
+	private void removeConnection(@NotNull ConnectionGene connection) {
+		removeConnection(connection.id());
 	}
 	
 	@Override
@@ -60,6 +152,11 @@ public class Genome implements Comparable<Genome> {
 	@Nullable
 	public NodeGene<?, ?> node(@NotNull UUID id) {
 		return nodes.get(id);
+	}
+	
+	@Nullable
+	public NodeGene<?, ?> node(@NotNull String name) {
+		return namedNodes.get(name);
 	}
 	
 	@Nullable
@@ -90,17 +187,17 @@ public class Genome implements Comparable<Genome> {
 					if (connections.containsKey(id)) {
 						continue;
 					}
-					ConnectionGene conGene = (ConnectionGene) jeat.connectionDefinitions()
+					ConnectionGene conGene = jeat.connectionDefinitions()
 						.createGene(id, this, () -> new ConnectionGeneDefinition(id));
-					connections.put(id, conGene);
+					addConnection(conGene);
 					break;
 				}
 			}
 			if (rnd.nextDouble() < con.removeConnectionChance) {
 				if (!connections.isEmpty()) {
-					ConnectionIdentifier id = new ArrayList<>(connections.keySet())
-						.get(rnd.nextInt(connections.size()));
-					connections.remove(id);
+					ConnectionIdentifier id =
+						new ArrayList<>(connections.keySet()).get(rnd.nextInt(connections.size()));
+					removeConnection(id);
 				}
 			}
 		}
@@ -109,8 +206,8 @@ public class Genome implements Comparable<Genome> {
 			if (rnd.nextDouble() < nd.removeNodeChance) {
 				NodeGene<?, ?> node = getRandomNode(true, false);
 				if (node != null) {
-					node.connections().forEach(c -> connections.remove(c.id()));
-					nodes.remove(node.id());
+					node.connections().forEach(this::removeConnection);
+					removeNode(node);
 				}
 			}
 			if (rnd.nextDouble() < nd.add.combineInputsChance) {
@@ -123,19 +220,19 @@ public class Genome implements Comparable<Genome> {
 						WorkingNodeGeneDefinition def = new WorkingNodeGeneDefinition(newX);
 						WorkingNodeGene n2 = def.createGene(this);
 						jeat.nodeDefinitions().add(def);
-						nodes.put(n2.id(), n2);
+						addNode(n2);
 						cons.forEach(c -> {
 							ConnectionIdentifier id = new ConnectionIdentifier(c.from().id(), n2.id());
-							ConnectionGene conGene = ((ConnectionGene) jeat.connectionDefinitions()
-								.createGene(id, this, () -> new ConnectionGeneDefinition(id))).weight(c.weight());
-							connections.put(id, conGene);
-							connections.remove(c.id());
+							ConnectionGene conGene = jeat.connectionDefinitions()
+								.createGene(id, this, () -> new ConnectionGeneDefinition(id)).weight(c.weight());
+							addConnection(conGene);
+							removeConnection(c.id());
 						});
-						ConnectionGene conGene = ((ConnectionGene) jeat.connectionDefinitions()
+						ConnectionGene conGene = jeat.connectionDefinitions()
 							.createGene(new ConnectionIdentifier(n2.id(), n1.id()), this,
 								() -> new ConnectionGeneDefinition(
-									new ConnectionIdentifier(n2.id(), n1.id())))).weight(1);
-						connections.put(conGene.id(), conGene);
+									new ConnectionIdentifier(n2.id(), n1.id()))).weight(1);
+						addConnection(conGene);
 					}
 				}
 			}
@@ -149,19 +246,19 @@ public class Genome implements Comparable<Genome> {
 						WorkingNodeGeneDefinition def = new WorkingNodeGeneDefinition(newX);
 						WorkingNodeGene n2 = def.createGene(this);
 						jeat.nodeDefinitions().add(def);
-						nodes.put(n2.id(), n2);
+						addNode(n2);
 						cons.forEach(c -> {
 							ConnectionIdentifier id = new ConnectionIdentifier(n2.id(), c.to().id());
-							ConnectionGene conGene = ((ConnectionGene) jeat.connectionDefinitions()
-								.createGene(id, this, () -> new ConnectionGeneDefinition(id))).weight(c.weight());
-							connections.put(id, conGene);
-							connections.remove(c.id());
+							ConnectionGene conGene = jeat.connectionDefinitions()
+								.createGene(id, this, () -> new ConnectionGeneDefinition(id)).weight(c.weight());
+							addConnection(conGene);
+							removeConnection(c.id());
 						});
-						ConnectionGene conGene = ((ConnectionGene) jeat.connectionDefinitions()
+						ConnectionGene conGene = jeat.connectionDefinitions()
 							.createGene(new ConnectionIdentifier(n1.id(), n2.id()), this,
 								() -> new ConnectionGeneDefinition(
-									new ConnectionIdentifier(n1.id(), n2.id())))).weight(1);
-						connections.put(conGene.id(), conGene);
+									new ConnectionIdentifier(n1.id(), n2.id()))).weight(1);
+						addConnection(conGene);
 					}
 				}
 			}
@@ -174,16 +271,16 @@ public class Genome implements Comparable<Genome> {
 					WorkingNodeGeneDefinition def = new WorkingNodeGeneDefinition(newX);
 					WorkingNodeGene n2 = def.createGene(this);
 					jeat.nodeDefinitions().add(def);
-					nodes.put(n2.id(), n2);
+					addNode(n2);
 					ConnectionIdentifier id1 = new ConnectionIdentifier(from.id(), n2.id());
-					ConnectionGene conGene1 = ((ConnectionGene) jeat.connectionDefinitions()
-						.createGene(id1, this, () -> new ConnectionGeneDefinition(id1))).weight(1);
-					connections.put(id1, conGene1);
+					ConnectionGene conGene1 = jeat.connectionDefinitions()
+						.createGene(id1, this, () -> new ConnectionGeneDefinition(id1)).weight(1);
+					addConnection(conGene1);
 					ConnectionIdentifier id2 = new ConnectionIdentifier(n2.id(), to.id());
-					ConnectionGene conGene2 = ((ConnectionGene) jeat.connectionDefinitions()
-						.createGene(id2, this, () -> new ConnectionGeneDefinition(id2))).weight(con.weight());
-					connections.put(id2, conGene2);
-					connections.remove(con.id());
+					ConnectionGene conGene2 = jeat.connectionDefinitions()
+						.createGene(id2, this, () -> new ConnectionGeneDefinition(id2)).weight(con.weight());
+					addConnection(conGene2);
+					removeConnection(con.id());
 				}
 			}
 		}
@@ -215,8 +312,8 @@ public class Genome implements Comparable<Genome> {
 	@NotNull
 	public Genome copy(boolean copyId) {
 		Genome genome = copyId ? new Genome(jeat, id) : new Genome(jeat);
-		nodes.values().forEach(n -> genome.nodes.put(n.id(), n.copy(genome)));
-		connections.values().forEach(c -> genome.connections.put(c.id(), c.copy(genome)));
+		nodes.values().forEach(node -> genome.addNode(node.copy(genome)));
+		connections.values().forEach(con -> genome.addConnection(con.copy(genome)));
 		return genome;
 	}
 	
