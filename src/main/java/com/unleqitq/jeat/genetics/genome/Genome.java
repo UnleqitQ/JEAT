@@ -213,13 +213,14 @@ public class Genome implements Comparable<Genome> {
 					break;
 				}
 			}
-			if (rnd.nextDouble() < con.removeConnectionChance) {
-				if (!connections.isEmpty()) {
-					ConnectionIdentifier id =
-						new ArrayList<>(connections.keySet()).get(rnd.nextInt(connections.size()));
-					removeConnection(id);
-				}
-			}
+			Set.copyOf(connections.values())
+				.stream()
+				.filter(c -> rnd.nextDouble() < con.removeConnectionChance)
+				.forEach(c -> {
+					if (c.from().inputs().size() > 1 && c.to().outputs().size() > 1) {
+						removeConnection(c);
+					}
+				});
 		}
 		{
 			MutationConfig.NodeMutationConfig.NodeStructureMutationConfig nd = cfg.node.structure;
