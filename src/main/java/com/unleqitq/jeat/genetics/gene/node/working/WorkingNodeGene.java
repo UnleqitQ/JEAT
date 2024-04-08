@@ -1,5 +1,7 @@
 package com.unleqitq.jeat.genetics.gene.node.working;
 
+import com.unleqitq.jeat.activationFunction.ActivationFunction;
+import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.genetics.gene.node.AbstractNodeGene;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import lombok.Getter;
@@ -12,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 @Setter
 public class WorkingNodeGene extends AbstractNodeGene<WorkingNodeGene, WorkingNodeGeneDefinition> {
 	
+	private ActivationFunction activationFunction;
+	private AggregationFunction aggregationFunction;
 	private boolean enabled = true;
 	
 	public WorkingNodeGene(@NotNull Genome genome, @NotNull WorkingNodeGeneDefinition definition) {
