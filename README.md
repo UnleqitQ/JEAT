@@ -19,3 +19,20 @@ This project uses the following dependencies:
 - [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/)
 - [Apache Commons Math](https://commons.apache.org/proper/commons-math/)
 - [Apache Commons Collections](https://commons.apache.org/proper/commons-collections/)
+
+## Planned Features
+
+- Speciation
+- Stagnation
+- Extensible activation functions
+- Add default activation functions
+- Add default aggregation functions
+- Improve reproduction
+- Improve mutation
+- Improve crossover
+- Document the code
+- Comment the code
+- Documentation
+- Tests
+- Examples
+- and more...
