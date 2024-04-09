@@ -276,14 +276,14 @@ public class ReproductionHelper {
 	 *
 	 * @param config The configuration for the reproduction.
 	 * @param parentSpecies The parent species.
+	 * @param sortedGenomesBySpecies The map of species and their sorted genomes.
 	 * @return The map of species and their list of pairs of genomes and their probabilities of being selected.
 	 */
 	private static Map<Species, List<Pair<Genome, Double>>> generateGenomeProbabilities(
-		@NotNull ReproductionConfig config, @NotNull List<Species> parentSpecies) {
+		@NotNull ReproductionConfig config, @NotNull List<Species> parentSpecies, @NotNull Map<UUID, List<Genome>> sortedGenomesBySpecies) {
 		return parentSpecies.stream().collect(Collectors.toMap(s -> s, s -> {
 			// Sort the genomes by fitness
-			List<Genome> sortedGenomes =
-				s.getGenomes().stream().sorted(Comparator.comparingDouble(Genome::fitness)).toList();
+			List<Genome> sortedGenomes = sortedGenomesBySpecies.get(s.id());
 			// calculate the amount of parents in this species
 			int parentAmount = Math.max((int) (Math.ceil(s.size() * config.parentRatio)), 1);
 			// get the sublist
@@ -324,17 +324,18 @@ public class ReproductionHelper {
 	 * @param amount The amount of genomes to create.
 	 * @param config The configuration for the reproduction.
 	 * @param minimalSpeciesSize The adjusted minimal species size for reproduction.
+	 * @param sortedGenomesBySpecies The map of species and their sorted genomes.
 	 * @return The created genomes.
 	 */
 	@NotNull
 	public Collection<Genome> reproduceSexually(int amount, @NotNull ReproductionConfig config,
-		int minimalSpeciesSize) {
+		int minimalSpeciesSize, @NotNull Map<UUID, List<Genome>> sortedGenomesBySpecies) {
 		ReproductionConfig.SexualReproductionConfig sConfig = config.sexualReproductionConfig;
 		if (sConfig == null)
 			throw new IllegalArgumentException("No sexual reproduction configuration provided.");
 		List<Species> parentSpecies = collectParentSpecies(minimalSpeciesSize);
 		Map<Species, List<Pair<Genome, Double>>> parentGenomes =
-			generateGenomeProbabilities(config, parentSpecies);
+			generateGenomeProbabilities(config, parentSpecies, sortedGenomesBySpecies);
 		List<Pair<Species, Double>> normalizedSpeciesProbabilities =
 			generateSpeciesProbabilities(parentSpecies);
 		
@@ -375,10 +376,10 @@ public class ReproductionHelper {
 	 */
 	@NotNull
 	public Collection<Genome> reproduceAsexually(int amount, @NotNull ReproductionConfig config,
-		int minimalSpeciesSize) {
+		int minimalSpeciesSize, @NotNull Map<UUID, List<Genome>> sortedGenomesBySpecies) {
 		List<Species> parentSpecies = collectParentSpecies(minimalSpeciesSize);
 		Map<Species, List<Pair<Genome, Double>>> parentGenomes =
-			generateGenomeProbabilities(config, parentSpecies);
+			generateGenomeProbabilities(config, parentSpecies, sortedGenomesBySpecies);
 		List<Pair<Species, Double>> normalizedSpeciesProbabilities =
 			generateSpeciesProbabilities(parentSpecies);
 		
