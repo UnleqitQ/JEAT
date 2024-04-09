@@ -460,7 +460,8 @@ public class ReproductionHelper {
 		// Add the new genomes
 		newGenomes.forEach(population::add);
 		
-		// TODO: Mutate the genomes
+		// Mutate the population
+		population.mutate();
 		
 		// Add the saved genomes
 		savedGenomes.forEach(population::add);
