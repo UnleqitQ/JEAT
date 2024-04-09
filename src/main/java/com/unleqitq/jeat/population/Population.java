@@ -27,6 +27,7 @@ public class Population {
 	 * The genomes in this population.
 	 */
 	@NotNull
+	@Getter (AccessLevel.PACKAGE)
 	private final Map<UUID, Genome> genomes = new HashMap<>();
 	/**
 	 * A sorted list of genomes in this population.
@@ -52,6 +53,11 @@ public class Population {
 	 */
 	@NotNull
 	private final StagnationHelper stagnationHelper;
+	/**
+	 * Helper instance for species reproduction.
+	 */
+	@NotNull
+	private final ReproductionHelper reproductionHelper;
 	
 	
 	/**
@@ -62,6 +68,7 @@ public class Population {
 	public Population(@NotNull Jeat jeat) {
 		this.jeat = jeat;
 		this.stagnationHelper = new StagnationHelper(this);
+		this.reproductionHelper = new ReproductionHelper(this);
 	}
 	
 	/**
@@ -118,6 +125,28 @@ public class Population {
 	 */
 	public void remove(@NotNull Species species) {
 		this.species.remove(species.id());
+	}
+	
+	/**
+	 * Removes a species as well as all genomes in that species from this population.
+	 *
+	 * @param id The ID of the species to remove.
+	 */
+	public void decimateSpecies(@NotNull UUID id) {
+		Species species = this.species.get(id);
+		if (species != null) {
+			this.decimateSpecies(species);
+		}
+	}
+	
+	/**
+	 * Removes a species as well as all genomes in that species from this population.
+	 *
+	 * @param species The species to remove.
+	 */
+	public void decimateSpecies(@NotNull Species species) {
+		species.getGenomes().forEach(this::removeGenome);
+		this.removeSpecies(species);
 	}
 	
 	/**
@@ -434,6 +463,25 @@ public class Population {
 	 */
 	public Collection<Species> stagnate(boolean addToHistory) {
 		return stagnationHelper.stagnate(addToHistory);
+	}
+	
+	/**
+	 * Mutates the genomes in this population.<br>
+	 * This method will change in the near future.
+	 */
+	public void mutate() {
+		this.genomes.values().forEach(Genome::mutate);
+	}
+	
+	/**
+	 * Reproduces the genomes in this population.
+	 * @param target The target population size.
+	 * @param config The reproduction configuration.
+	 * @return The Collection of genomes that have been created.
+	 */
+	@NotNull
+	public Collection<Genome> reproduce(int target, @NotNull ReproductionConfig config) {
+		return reproductionHelper.reproduce(target, config);
 	}
 	
 }
