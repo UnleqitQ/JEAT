@@ -3,6 +3,8 @@ package com.unleqitq.jeat.population;
 import com.unleqitq.jeat.Jeat;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import com.unleqitq.jeat.genetics.species.Species;
+import com.unleqitq.jeat.utils.tuple.Pair;
+import com.unleqitq.jeat.utils.tuple.Tuple;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
@@ -218,6 +220,86 @@ public class Population {
 		Species species = new Species(jeat, representative);
 		this.add(species);
 		return species;
+	}
+	
+	/**
+	 * Updates the species in this population.
+	 */
+	public void speciate() {
+		
+		// Creates a set to keep track of the genomes that have not yet been speciated
+		Set<Genome> unspeciated = new HashSet<>(genomes.values());
+		Set<UUID> discardedSpecies = new HashSet<>();
+		class DistanceCache {
+			
+			private final Map<Pair<Genome, Genome>, Double> cache = new HashMap<>();
+			
+			public double get(Genome a, Genome b) {
+				Pair<Genome, Genome> pair = Tuple.of(a, b);
+				if (cache.containsKey(pair)) return cache.get(pair);
+				double distance = a.distance(b);
+				cache.put(pair, distance);
+				cache.put(Tuple.of(b, a), distance);
+				return distance;
+			}
+			
+		}
+		DistanceCache distanceCache = new DistanceCache();
+		
+		for (Species species : this.species.values()) {
+			species.clear();
+			
+			// Get the representative genome of the species
+			Genome rep = species.representative();
+			
+			// Find the genome closest to the representative
+			Optional<Genome> closest =
+				unspeciated.stream().min(Comparator.comparingDouble(g -> distanceCache.get(rep, g)));
+			
+			if (closest.isPresent()) {
+				Genome g = closest.get();
+				// Set the closest genome as the representative
+				species.representative(g);
+				// Add the closest genome to the species
+				species.add(g);
+				// Remove the genome from the unspeciated set
+				unspeciated.remove(g);
+			}
+			else {
+				// If no genome is found, discard the species
+				discardedSpecies.add(species.id());
+			}
+		}
+		
+		// Remove species that didn't update their representative genome
+		discardedSpecies.forEach(this::removeSpecies);
+		
+		// Get the compatibility threshold
+		double compatibilityThreshold = jeat.config().species.compatibilityThreshold;
+		// Speciate the remaining genomes
+		for (Genome genome : unspeciated) {
+			// Find the species with the closest representative genome
+			Optional<Species> species = this.species.values()
+				.stream()
+				.filter(s -> distanceCache.get(s.representative(), genome) < compatibilityThreshold)
+				.min(Comparator.comparingDouble(s -> distanceCache.get(s.representative(), genome)));
+			
+			if (species.isEmpty()) {
+				// If no species is found, create a new one
+				Species newSpecies = new Species(jeat, genome);
+				this.add(newSpecies);
+			}
+			else {
+				// Add the genome to the found species
+				species.get().add(genome);
+			}
+		}
+		
+		// Remove species with no genomes
+		Set.copyOf(this.species.values()).stream().filter(Species::isEmpty).forEach(this::remove);
+		
+		// Reset the fitness of all species and genomes
+		this.species.values().stream().peek(Species::resetFitness).forEach(Species::resetGenomeFitnesses);
 	}
 
 }
