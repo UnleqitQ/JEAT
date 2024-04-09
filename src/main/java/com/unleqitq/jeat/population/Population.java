@@ -240,7 +240,7 @@ public class Population {
 	 */
 	@NotNull
 	public Genome createGenome() {
-		Genome genome = new Genome(jeat);
+		Genome genome = new Genome(jeat).init();
 		this.add(genome);
 		return genome;
 	}
