@@ -318,6 +318,27 @@ public class ReproductionHelper {
 	}
 	
 	/**
+	 * Collects all genomes that should survive to the next generation.
+	 *
+	 * @param config The configuration for the reproduction.
+	 * @param sortedGenomesBySpecies The map of species and their sorted genomes.
+	 * @return The collection of genomes that should survive to the next generation.
+	 */
+	@NotNull
+	private Collection<Genome> collectSurvivingGenomes(@NotNull ReproductionConfig config,
+		@NotNull Map<UUID, List<Genome>> sortedGenomesBySpecies) {
+		// No need to copy the genomes, as they will only be modified after the reproduction
+		
+		List<Genome> survivingGenomes = new ArrayList<>();
+		population.species().values().forEach(species -> {
+			int survivalAmount = (int) (Math.ceil(species.size() * config.survivalRate));
+			List<Genome> sortedGenomes = sortedGenomesBySpecies.get(species.id());
+			survivingGenomes.addAll(sortedGenomes.subList(0, survivalAmount));
+		});
+		return survivingGenomes;
+	}
+	
+	/**
 	 * Reproduces the population using sexual reproduction.<br>
 	 * This method only creates the new genomes and does not add them to the population.
 	 *
