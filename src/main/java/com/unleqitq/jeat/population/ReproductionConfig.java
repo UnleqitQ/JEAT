@@ -3,6 +3,7 @@ package com.unleqitq.jeat.population;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import lombok.Builder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.function.ToDoubleFunction;
@@ -73,5 +74,21 @@ public class ReproductionConfig {
 	 */
 	@Builder.Default
 	public double elitismRatio = 0.05;
+	
+	/**
+	 * Settings for sexual reproduction. (only used if {@link ReproductionConfig#sexualReproduction} is {@code true})
+	 */
+	@Builder.Default
+	@Nullable
+	public SexualReproductionConfig sexualReproductionConfig = null;
+	
+	/**
+	 * This class contains the configuration for sexual reproduction.<br>
+	 * This is only used if {@link ReproductionConfig#sexualReproduction} is {@code true}.
+	 */
+	@Builder
+	public static class SexualReproductionConfig {
+		
+	}
 	
 }
