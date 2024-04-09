@@ -484,4 +484,14 @@ public class Population {
 		return reproductionHelper.reproduce(target, config);
 	}
 	
+	/**
+	 * Creates a snapshot of this population.
+	 *
+	 * @return The snapshot of this population.
+	 */
+	@NotNull
+	public Generation snapshot() {
+		return Generation.create(this);
+	}
+	
 }

@@ -260,4 +260,18 @@ public class Species implements Comparable<Species> {
 		return Collections.unmodifiableList(this.stagnationHistory);
 	}
 	
+	/**
+	 * Create a copy of the species
+	 *
+	 * @param copyId Whether to copy the id of the species
+	 * @param genomeLookup The lookup table for the genomes
+	 * @return The copy of the species
+	 */
+	@NotNull
+	public Species copy(boolean copyId, @NotNull Map<UUID, Genome> genomeLookup) {
+		Species copy = new Species(jeat, copyId ? UUID.randomUUID() : id, genomeLookup.get(representative.id()));
+		genomes.values().forEach(g -> copy.add(genomeLookup.get(g.id())));
+		return copy;
+	}
+	
 }
