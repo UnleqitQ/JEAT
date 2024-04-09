@@ -16,9 +16,6 @@ This project uses the following dependencies:
 
 - [Lombok](https://projectlombok.org/) (&#x2665; to the Lombok team)
 - [JetBrains Annotations](https://mvnrepository.com/artifact/org.jetbrains/annotations)
-- [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/)
-- [Apache Commons Math](https://commons.apache.org/proper/commons-math/)
-- [Apache Commons Collections](https://commons.apache.org/proper/commons-collections/)
 
 ## Planned Features
 
