@@ -1,7 +1,9 @@
 package com.unleqitq.jeat;
 
 import com.unleqitq.jeat.activationFunction.ActivationFunction;
+import com.unleqitq.jeat.activationFunction.functions.SigmoidActivationFunction;
 import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
+import com.unleqitq.jeat.aggregationFunction.functions.SumAggregationFunction;
 import com.unleqitq.jeat.config.JeatConfig;
 import com.unleqitq.jeat.genetics.genome.GenomeStore;
 import com.unleqitq.jeat.jeat.ConnectionDefinitionStore;
@@ -25,20 +27,17 @@ import java.util.Random;
 public class Jeat {
 	
 	/**
-	 * The default activation function. (Currently the identity function, might change in the future,
-	 * so it is recommended to set this explicitly)
+	 * The default activation function.
 	 */
 	@Setter
 	@NotNull
-	private ActivationFunction defaultActivationFunction = v -> v;
+	private ActivationFunction defaultActivationFunction = new SigmoidActivationFunction();
 	/**
-	 * The default aggregation function. (Currently the sum function, might change in the future
-	 * (but probably not), so it is recommended to set this explicitly)
+	 * The default aggregation function.
 	 */
 	@Setter
 	@NotNull
-	private AggregationFunction defaultAggregationFunction =
-		vs -> vs.stream().mapToDouble(v -> v).sum();
+	private AggregationFunction defaultAggregationFunction = new SumAggregationFunction();
 	/**
 	 * The activation functions that can be used in the genomes.
 	 */
