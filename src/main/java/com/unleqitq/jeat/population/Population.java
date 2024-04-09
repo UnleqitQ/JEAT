@@ -459,4 +459,12 @@ public class Population {
 		return stagnationHelper.stagnate(addToHistory);
 	}
 	
+	/**
+	 * Mutates the genomes in this population.<br>
+	 * This method will change in the near future.
+	 */
+	public void mutate() {
+		this.genomes.values().forEach(Genome::mutate);
+	}
+	
 }
