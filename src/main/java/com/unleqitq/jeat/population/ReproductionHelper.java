@@ -430,8 +430,6 @@ public class ReproductionHelper {
 		Set<Genome> savedGenomes = new HashSet<>();
 		// Prepare the population for reproduction
 		int minimalSpeciesSize = preReproduction(config, savedGenomes);
-		// Calculate the amount of genomes to create
-		int amount = target - population.populationSize() - savedGenomes.size();
 		Map<UUID, List<Genome>> presortedGenomes = population.species()
 			.values()
 			.stream()
@@ -441,6 +439,8 @@ public class ReproductionHelper {
 				.toList()));
 		
 		Collection<Genome> survivingGenomes = collectSurvivingGenomes(config, presortedGenomes);
+		// Calculate the amount of genomes to create
+		int amount = target - survivingGenomes.size() - savedGenomes.size();
 		
 		// Reproduce the population
 		Collection<Genome> newGenomes;
