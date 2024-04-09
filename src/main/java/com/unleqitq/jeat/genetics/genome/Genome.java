@@ -12,6 +12,7 @@ import com.unleqitq.jeat.genetics.gene.node.bias.BiasNodeGeneDefinition;
 import com.unleqitq.jeat.genetics.gene.node.input.InputNodeGeneDefinition;
 import com.unleqitq.jeat.genetics.gene.node.working.WorkingNodeGene;
 import com.unleqitq.jeat.genetics.gene.node.working.WorkingNodeGeneDefinition;
+import com.unleqitq.jeat.internal.GlobalSettings;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -101,7 +102,10 @@ public class Genome implements Comparable<Genome> {
 	private void addNode(@NotNull NodeGene<?, ?> node) {
 		if (node instanceof BiasNodeGene) {
 			if (bias != null) {
-				throw new IllegalStateException("Bias node already exists");
+				switch (GlobalSettings.BIAS_ALREADY_EXISTS) {
+					case THROW -> throw new IllegalStateException("Bias node already exists");
+					case WARN -> System.err.println("(JEAT) [WARN] Bias node already exists");
+				}
 			}
 			bias = (BiasNodeGene) node;
 		}
