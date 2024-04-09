@@ -51,10 +51,11 @@ public class Species implements Comparable<Species> {
 	private Double stagnationFitness;
 	
 	/**
-	 * The history of the stagnation fitness of the species
+	 * The history of the stagnation fitness of the species<br>
+	 * New values are added to the end of the list
 	 */
 	@NotNull
-	private final List<Double> stagnationHistory = new ArrayList<>();
+	private final List<Double> stagnationHistory = new LinkedList<>();
 	
 	/**
 	 * The representative genome of the species
@@ -249,7 +250,9 @@ public class Species implements Comparable<Species> {
 	}
 	
 	/**
-	 * Get the history of the stagnation fitness of the species
+	 * Get the history of the stagnation fitness of the species<br>
+	 * New values are added to the end of the list
+	 *
 	 * @return The history of the stagnation fitness of the species
 	 */
 	@NotNull
