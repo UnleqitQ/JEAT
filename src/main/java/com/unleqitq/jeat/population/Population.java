@@ -53,6 +53,11 @@ public class Population {
 	 */
 	@NotNull
 	private final StagnationHelper stagnationHelper;
+	/**
+	 * Helper instance for species reproduction.
+	 */
+	@NotNull
+	private final ReproductionHelper reproductionHelper;
 	
 	
 	/**
@@ -63,6 +68,7 @@ public class Population {
 	public Population(@NotNull Jeat jeat) {
 		this.jeat = jeat;
 		this.stagnationHelper = new StagnationHelper(this);
+		this.reproductionHelper = new ReproductionHelper(this);
 	}
 	
 	/**
@@ -465,6 +471,17 @@ public class Population {
 	 */
 	public void mutate() {
 		this.genomes.values().forEach(Genome::mutate);
+	}
+	
+	/**
+	 * Reproduces the genomes in this population.
+	 * @param target The target population size.
+	 * @param config The reproduction configuration.
+	 * @return The Collection of genomes that have been created.
+	 */
+	@NotNull
+	public Collection<Genome> reproduce(int target, @NotNull ReproductionConfig config) {
+		return reproductionHelper.reproduce(target, config);
 	}
 	
 }
