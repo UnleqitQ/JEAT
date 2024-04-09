@@ -1,6 +1,11 @@
 package com.unleqitq.jeat.population;
 
+import com.unleqitq.jeat.genetics.genome.Genome;
 import lombok.Builder;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.function.ToDoubleFunction;
 
 /**
  * This class contains the configuration for the reproduction of the population.
@@ -15,6 +20,14 @@ public class ReproductionConfig {
 	 */
 	@Builder.Default
 	public boolean sexualReproduction = true;
+	
+	/**
+	 * The function to calculate the combined fitness of all genomes in a species.
+	 */
+	@Builder.Default
+	@NotNull
+	public ToDoubleFunction<Collection<Genome>> aggregationFunction =
+		genomes -> genomes.stream().mapToDouble(Genome::fitness).average().orElse(0);
 	
 	/**
 	 * The minimal size of a species to be allowed to reproduce.
