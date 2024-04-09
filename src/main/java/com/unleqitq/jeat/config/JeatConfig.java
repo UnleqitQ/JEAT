@@ -24,4 +24,10 @@ public class JeatConfig {
 	@NotNull
 	public CrossoverConfig crossover;
 	
+	/**
+	 * The configuration for the species.
+	 */
+	@NotNull
+	public SpeciesConfig species;
+	
 }

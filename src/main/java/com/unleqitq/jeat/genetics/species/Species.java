@@ -3,6 +3,7 @@ package com.unleqitq.jeat.genetics.species;
 import com.unleqitq.jeat.Jeat;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,6 +52,7 @@ public class Species implements Comparable<Species> {
 	 */
 	@NotNull
 	@Getter
+	@Setter
 	private Genome representative;
 	
 	/**
@@ -61,6 +63,7 @@ public class Species implements Comparable<Species> {
 		this.jeat = jeat;
 		this.id = id;
 		this.representative = representative;
+		this.add(representative);
 	}
 	
 	/**
@@ -102,8 +105,9 @@ public class Species implements Comparable<Species> {
 	 * Add a genome to the species
 	 * @param genome The genome to add
 	 */
-	public void addGenome(@NotNull Genome genome) {
+	public void add(@NotNull Genome genome) {
 		this.genomes.put(genome.id(), genome);
+		this.fitness = null;
 	}
 	
 	/**
@@ -152,6 +156,21 @@ public class Species implements Comparable<Species> {
 	 */
 	public void clear() {
 		this.genomes.clear();
+		this.fitness = null;
+	}
+	
+	/**
+	 * Set the fitness of the species to null
+	 */
+	public void resetFitness() {
+		this.fitness = null;
+	}
+	
+	/**
+	 * Set the fitnesses of all genomes in the species to 0
+	 */
+	public void resetGenomeFitnesses() {
+		this.genomes.values().forEach(g->g.fitness(0));
 	}
 	
 	/**
