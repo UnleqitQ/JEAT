@@ -1,12 +1,14 @@
 package com.unleqitq.jeat.population;
 
 import com.unleqitq.jeat.Jeat;
+import com.unleqitq.jeat.calculator.Calculator;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import com.unleqitq.jeat.genetics.species.Species;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -74,6 +76,16 @@ public class Generation {
 			.stream()
 			.collect(Collectors.toMap(Species::id, s -> s.copy(true, genomes)));
 		return new Generation(population, genomes, species);
+	}
+	
+	/**
+	 * Creates Calculators for the genomes in this generation.
+	 *
+	 * @return The Collection of Calculators
+	 */
+	@NotNull
+	public Collection<Calculator> createCalculators() {
+		return this.genomes.values().stream().map(Calculator::create).toList();
 	}
 	
 }

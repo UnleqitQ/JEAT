@@ -1,6 +1,7 @@
 package com.unleqitq.jeat.population;
 
 import com.unleqitq.jeat.Jeat;
+import com.unleqitq.jeat.calculator.Calculator;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import com.unleqitq.jeat.genetics.species.Species;
 import com.unleqitq.jeat.utils.tuple.Pair;
@@ -492,6 +493,16 @@ public class Population {
 	@NotNull
 	public Generation snapshot() {
 		return Generation.create(this);
+	}
+	
+	/**
+	 * Creates Calculators for the genomes in this population.
+	 *
+	 * @return The Collection of Calculators
+	 */
+	@NotNull
+	public Collection<Calculator> createCalculators() {
+		return this.genomes.values().stream().map(Calculator::create).toList();
 	}
 	
 }
