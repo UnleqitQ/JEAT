@@ -280,7 +280,8 @@ public class ReproductionHelper {
 	 * @return The map of species and their list of pairs of genomes and their probabilities of being selected.
 	 */
 	private static Map<Species, List<Pair<Genome, Double>>> generateGenomeProbabilities(
-		@NotNull ReproductionConfig config, @NotNull List<Species> parentSpecies, @NotNull Map<UUID, List<Genome>> sortedGenomesBySpecies) {
+		@NotNull ReproductionConfig config, @NotNull List<Species> parentSpecies,
+		@NotNull Map<UUID, List<Genome>> sortedGenomesBySpecies) {
 		return parentSpecies.stream().collect(Collectors.toMap(s -> s, s -> {
 			// Sort the genomes by fitness
 			List<Genome> sortedGenomes = sortedGenomesBySpecies.get(s.id());
@@ -426,8 +427,45 @@ public class ReproductionHelper {
 	 */
 	@NotNull
 	public Collection<Genome> reproduce(int target, @NotNull ReproductionConfig config) {
-		// TODO: Implement reproduction
-		throw new UnsupportedOperationException("Reproduction is not yet implemented.");
+		Set<Genome> savedGenomes = new HashSet<>();
+		// Prepare the population for reproduction
+		int minimalSpeciesSize = preReproduction(config, savedGenomes);
+		// Calculate the amount of genomes to create
+		int amount = target - population.populationSize() - savedGenomes.size();
+		Map<UUID, List<Genome>> presortedGenomes = population.species()
+			.values()
+			.stream()
+			.collect(Collectors.toMap(Species::id, s -> s.getGenomes()
+				.stream()
+				.sorted(Comparator.comparingDouble(g -> -g.fitness()))
+				.toList()));
+		
+		Collection<Genome> survivingGenomes = collectSurvivingGenomes(config, presortedGenomes);
+		
+		// Reproduce the population
+		Collection<Genome> newGenomes;
+		if (config.sexualReproduction) {
+			newGenomes = reproduceSexually(amount, config, minimalSpeciesSize, presortedGenomes);
+		}
+		else {
+			newGenomes = reproduceAsexually(amount, config, minimalSpeciesSize, presortedGenomes);
+		}
+		
+		// Clear the population
+		population.clearGenomes();
+		population.clearSpeciesGenomes();
+		
+		// Add the surviving genomes
+		survivingGenomes.forEach(population::add);
+		// Add the new genomes
+		newGenomes.forEach(population::add);
+		
+		// TODO: Mutate the genomes
+		
+		// Add the saved genomes
+		savedGenomes.forEach(population::add);
+		
+		return newGenomes;
 	}
 	
 }
