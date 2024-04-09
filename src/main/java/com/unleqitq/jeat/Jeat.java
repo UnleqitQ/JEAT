@@ -7,6 +7,7 @@ import com.unleqitq.jeat.aggregationFunction.functions.SumAggregationFunction;
 import com.unleqitq.jeat.config.JeatConfig;
 import com.unleqitq.jeat.jeat.ConnectionDefinitionStore;
 import com.unleqitq.jeat.jeat.NodeDefinitionStore;
+import com.unleqitq.jeat.population.Population;
 import com.unleqitq.jeat.utils.RandomElementList;
 import lombok.Getter;
 import lombok.Setter;
@@ -79,6 +80,16 @@ public class Jeat {
 	 */
 	public Jeat(@NotNull JeatConfig config) {
 		this.config = config;
+	}
+	
+	/**
+	 * Creates a new Population that is based on this instance of JEAT.
+	 *
+	 * @return The new Population
+	 */
+	@NotNull
+	public Population createPopulation() {
+		return new Population(this);
 	}
 	
 }
