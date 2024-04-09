@@ -80,7 +80,8 @@ public class ReproductionConfig {
 	 */
 	@Builder.Default
 	@Nullable
-	public SexualReproductionConfig sexualReproductionConfig = null;
+	public SexualReproductionConfig sexualReproductionConfig =
+		SexualReproductionConfig.builder().build();
 	
 	/**
 	 * This class contains the configuration for sexual reproduction.<br>
@@ -94,6 +95,14 @@ public class ReproductionConfig {
 		 */
 		@Builder.Default
 		public double interspeciesMatingProbability = 0.1;
+		
+		/**
+		 * Whether the genomes should be swapped before mating if the second genome is fitter than the first genome.<br>
+		 * This is only useful if the crossover is not commutative. (e.g. if the order of the parents matters)<br>
+		 * By default the crossover is commutative. (the order of the parents does not matter)
+		 */
+		@Builder.Default
+		public boolean swapParents = false;
 		
 	}
 	
