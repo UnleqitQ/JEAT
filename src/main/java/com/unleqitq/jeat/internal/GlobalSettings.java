@@ -18,6 +18,7 @@ public class GlobalSettings {
 	
 	public static ErrorHandling NODE_X_BOUNDS = ErrorHandling.WARN;
 	public static ErrorHandling BIAS_ALREADY_EXISTS = ErrorHandling.THROW;
+	public static ErrorHandling COMPARING_DIFFERENT_NODE_TYPES = ErrorHandling.THROW;
 	
 	public enum ErrorHandling {
 		THROW,
