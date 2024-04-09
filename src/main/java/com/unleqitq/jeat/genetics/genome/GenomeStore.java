@@ -122,24 +122,20 @@ public class GenomeStore {
 	
 	@Nullable
 	public Genome best(int offset) {
-		if (sorted) return direction == ListDirection.DESCENDING ? genomesList.get(offset) :
+		if (!sorted) {
+			sort();
+		}
+		return direction == ListDirection.DESCENDING ? genomesList.get(offset) :
 			genomesList.get(genomesList.size() - offset - 1);
-		return genomesList.stream()
-			.sorted(Comparator.comparingDouble(Genome::fitness))
-			.skip(offset)
-			.findFirst()
-			.orElse(null);
 	}
 	
 	@Nullable
 	public Genome worst(int offset) {
-		if (sorted) return direction == ListDirection.DESCENDING ?
+		if (!sorted) {
+			sort();
+		}
+		return direction == ListDirection.DESCENDING ?
 			genomesList.get(genomesList.size() - offset - 1) : genomesList.get(offset);
-		return genomesList.stream()
-			.sorted(Comparator.comparingDouble(g -> -g.fitness()))
-			.skip(offset)
-			.findFirst()
-			.orElse(null);
 	}
 	
 	/**
@@ -150,20 +146,16 @@ public class GenomeStore {
 	 * @return the best genomes
 	 */
 	public List<Genome> best(int offset, int count) {
-		if (sorted) {
-			if (direction == ListDirection.DESCENDING) {
-				return Collections.unmodifiableList(genomesList.subList(offset, offset + count));
-			}
-			else {
-				return Collections.unmodifiableList(genomesList.subList(genomesList.size() - offset - count,
-					genomesList.size() - offset));
-			}
+		if (!sorted) {
+			sort();
 		}
-		return genomesList.stream()
-			.sorted(Comparator.comparingDouble(Genome::fitness))
-			.skip(offset)
-			.limit(count)
-			.toList();
+		if (direction == ListDirection.DESCENDING) {
+			return Collections.unmodifiableList(genomesList.subList(offset, offset + count));
+		}
+		else {
+			return Collections.unmodifiableList(
+				genomesList.subList(genomesList.size() - offset - count, genomesList.size() - offset));
+		}
 	}
 	
 	/**
@@ -174,20 +166,16 @@ public class GenomeStore {
 	 * @return the worst genomes
 	 */
 	public List<Genome> worst(int offset, int count) {
-		if (sorted) {
-			if (direction == ListDirection.DESCENDING) {
-				return Collections.unmodifiableList(genomesList.subList(genomesList.size() - offset - count,
-					genomesList.size() - offset));
-			}
-			else {
-				return Collections.unmodifiableList(genomesList.subList(offset, offset + count));
-			}
+		if (!sorted) {
+			sort();
 		}
-		return genomesList.stream()
-			.sorted(Comparator.comparingDouble(g -> -g.fitness()))
-			.skip(offset)
-			.limit(count)
-			.toList();
+		if (direction == ListDirection.DESCENDING) {
+			return Collections.unmodifiableList(
+				genomesList.subList(genomesList.size() - offset - count, genomesList.size() - offset));
+		}
+		else {
+			return Collections.unmodifiableList(genomesList.subList(offset, offset + count));
+		}
 	}
 	
 	public void addAll(@NotNull Collection<Genome> genomes) {
