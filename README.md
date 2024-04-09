@@ -25,8 +25,6 @@ This project uses the following dependencies:
 - Speciation
 - Stagnation
 - Extensible activation functions
-- Add default activation functions
-- Add default aggregation functions
 - Improve reproduction
 - Improve mutation
 - Improve crossover
