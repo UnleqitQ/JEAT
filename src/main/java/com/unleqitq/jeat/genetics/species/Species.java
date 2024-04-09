@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * Represents a species in the NEAT algorithm
  */
 @Accessors (fluent = true)
-public class Species {
+public class Species implements Comparable<Species> {
 	
 	/**
 	 * The Jeat instance
@@ -82,7 +82,7 @@ public class Species {
 	 * Get the fitness of the species
 	 * @return The fitness of the species
 	 */
-	public double getFitness() {
+	public double fitness() {
 		if (this.fitness == null) throw new IllegalStateException("Fitness not calculated");
 		return this.fitness;
 	}
@@ -93,9 +93,9 @@ public class Species {
 	 *                            if the fitness is not calculated
 	 * @return The fitness of the species
 	 */
-	public double getFitness(@NotNull ToDoubleFunction<Collection<Genome>> aggregationFunction) {
+	public double fitness(@NotNull ToDoubleFunction<Collection<Genome>> aggregationFunction) {
 		if (this.fitness == null) this.calculateFitness(aggregationFunction);
-		return this.getFitness();
+		return this.fitness;
 	}
 	
 	/**
@@ -161,6 +161,32 @@ public class Species {
 	@NotNull
 	public Map<UUID, Double> getGenomeFitnesses() {
 		return this.genomes.values().stream().collect(Collectors.toMap(Genome::id, Genome::fitness));
+	}
+	
+	/**
+	 * The comparison function uses the id of the species to compare them<br>
+	 * This is mainly used for TreeSet and TreeMap
+	 *
+	 * @param o The species to compare to
+	 * @return The comparison result
+	 */
+	@Override
+	public int compareTo(@NotNull Species o) {
+		return this.id.compareTo(o.id);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		
+		Species species = (Species) o;
+		return id.equals(species.id);
+	}
+	
+	@Override
+	public int hashCode() {
+		return id.hashCode();
 	}
 	
 }
