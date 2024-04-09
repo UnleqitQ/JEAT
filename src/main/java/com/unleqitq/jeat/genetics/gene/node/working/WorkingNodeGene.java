@@ -5,6 +5,7 @@ import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.config.MutationConfig;
 import com.unleqitq.jeat.genetics.gene.node.NodeGene;
 import com.unleqitq.jeat.genetics.genome.Genome;
+import com.unleqitq.jeat.internal.GlobalSettings;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -63,6 +64,34 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 		copy.activationFunction = activationFunction;
 		copy.aggregationFunction = aggregationFunction;
 		return copy;
+	}
+	
+	@Override
+	public double distance(@NotNull NodeGene<?, ?> other) {
+		if (!(other instanceof WorkingNodeGene)) {
+			switch (GlobalSettings.COMPARING_DIFFERENT_NODE_TYPES) {
+				case THROW:
+					throw new IllegalArgumentException(
+						"Cannot compare different node types. (%s, %s)".formatted(getClass().getName(),
+							other.getClass().getName()));
+				case WARN:
+					System.err.printf("(JEAT) [WARN] Cannot compare different node types. (%s, %s)%n",
+						getClass().getName(), other.getClass().getName());
+				case IGNORE:
+					return 0.0;
+			}
+		}
+		WorkingNodeGene o = (WorkingNodeGene) other;
+		double distance = 0.0;
+		if (enabled != o.enabled) return jeat().config().distance.node.disjointCoefficient;
+		if (!enabled) return 0.0;
+		if (!activationFunction.equals(o.activationFunction)) {
+			distance += jeat().config().distance.node.activationFunctionCoefficient;
+		}
+		if (!aggregationFunction.equals(o.aggregationFunction)) {
+			distance += jeat().config().distance.node.aggregationFunctionCoefficient;
+		}
+		return distance;
 	}
 	
 }

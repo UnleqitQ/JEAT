@@ -441,9 +441,65 @@ public class Genome implements Comparable<Genome> {
 		return genome;
 	}
 	
+	private double nodesDistance(@NotNull Genome other) {
+		int disjoint = 0;
+		double distance = 0;
+		int max = Math.max(nodes.size(), other.nodes.size());
+		
+		// Count nodes that are in this genome but not in the other genome
+		// Also for those that are in both genomes calculate the distance
+		for (NodeGene<?, ?> node : nodes.values()) {
+			NodeGene<?, ?> otherNode = other.node(node.id());
+			if (otherNode == null) {
+				disjoint++;
+			}
+			else {
+				distance += node.distance(otherNode);
+			}
+		}
+		// Count nodes that are in the other genome but not in this genome
+		for (NodeGene<?, ?> node : other.nodes.values()) {
+			NodeGene<?, ?> otherNode = node(node.id());
+			if (otherNode == null) {
+				disjoint++;
+			}
+		}
+		
+		return (distance + (jeat.config().distance.node.disjointCoefficient * disjoint)) / max;
+	}
+	
+	private double connectionsDistance(@NotNull Genome other) {
+		int disjoint = 0;
+		double distance = 0;
+		int max = Math.max(connections.size(), other.connections.size());
+		
+		// Count connections that are in this genome but not in the other genome
+		// Also for those that are in both genomes calculate the distance
+		for (ConnectionGene con : connections.values()) {
+			ConnectionGene otherCon = other.connection(con.id());
+			if (otherCon == null) {
+				disjoint++;
+			}
+			else {
+				distance += con.distance(otherCon);
+			}
+		}
+		// Count connections that are in the other genome but not in this genome
+		for (ConnectionGene con : other.connections.values()) {
+			ConnectionGene otherCon = connection(con.id());
+			if (otherCon == null) {
+				disjoint++;
+			}
+		}
+		
+		return (distance + (jeat.config().distance.connection.disjointCoefficient * disjoint)) / max;
+	}
+	
 	public double distance(@NotNull Genome other) {
-		// TODO: Implement distance calculation
-		return 0;
+		double nodesDistance = nodesDistance(other);
+		double connectionsDistance = connectionsDistance(other);
+		
+		return nodesDistance + connectionsDistance;
 	}
 	
 }

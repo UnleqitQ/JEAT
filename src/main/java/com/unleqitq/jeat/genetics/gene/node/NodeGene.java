@@ -56,4 +56,6 @@ public abstract class NodeGene<S extends NodeGene<S, D>, D extends NodeGeneDefin
 			.toList();
 	}
 	
+	public abstract double distance(@NotNull NodeGene<?, ?> other);
+	
 }

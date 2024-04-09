@@ -30,4 +30,10 @@ public class JeatConfig {
 	@NotNull
 	public SpeciesConfig species;
 	
+	/**
+	 * The configuration for the distance calculation.
+	 */
+	@NotNull
+	public DistanceConfig distance;
+	
 }

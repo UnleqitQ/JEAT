@@ -52,12 +52,12 @@ public class ConnectionGene
 	}
 	
 	@NotNull
-	public NodeGene<?,?> from() {
+	public NodeGene<?, ?> from() {
 		return Objects.requireNonNull(genome().node(fromId()));
 	}
 	
 	@NotNull
-	public NodeGene<?,?> to() {
+	public NodeGene<?, ?> to() {
 		return Objects.requireNonNull(genome().node(toId()));
 	}
 	
@@ -68,6 +68,20 @@ public class ConnectionGene
 		copy.enabled = enabled;
 		copy.weight = weight;
 		return copy;
+	}
+	
+	public double distance(ConnectionGene o) {
+		if (this.enabled != o.enabled) {
+			return jeat().config().distance.connection.disjointCoefficient;
+		}
+		if (!this.enabled) {
+			return 0;
+		}
+		double distance = 0;
+		double maxWeightDifference = jeat().config().distance.connection.maxWeightDifference;
+		double weightDifference = Math.min(Math.abs(this.weight - o.weight), maxWeightDifference);
+		distance += weightDifference * jeat().config().distance.connection.weightCoefficient;
+		return distance;
 	}
 	
 }
