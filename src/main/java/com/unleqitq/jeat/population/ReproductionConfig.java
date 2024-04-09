@@ -53,6 +53,12 @@ public class ReproductionConfig {
 	public double survivalRate = 0.1;
 	
 	/**
+	 * The ratio of the genomes of a species that will be used for reproduction. (the best genomes)
+	 */
+	@Builder.Default
+	public double parentRatio = 0.2;
+	
+	/**
 	 * The ratio of species that will be discarded before reproduction. (the worst species)
 	 */
 	@Builder.Default
