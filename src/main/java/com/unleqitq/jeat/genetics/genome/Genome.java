@@ -441,4 +441,9 @@ public class Genome implements Comparable<Genome> {
 		return genome;
 	}
 	
+	public double distance(@NotNull Genome other) {
+		// TODO: Implement distance calculation
+		return 0;
+	}
+	
 }
