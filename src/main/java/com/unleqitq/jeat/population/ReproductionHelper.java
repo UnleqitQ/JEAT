@@ -258,7 +258,6 @@ public class ReproductionHelper {
 	@NotNull
 	private static List<Pair<Species, Double>> generateSpeciesProbabilities(
 		@NotNull List<Species> parentSpecies) {
-		// calculate the normalized species probabilities
 		// calculate the fitness range
 		double minFitness = parentSpecies.stream().mapToDouble(Species::fitness).min().orElse(0);
 		double maxFitness = parentSpecies.stream().mapToDouble(Species::fitness).max().orElse(0);
@@ -281,7 +280,6 @@ public class ReproductionHelper {
 	 */
 	private static Map<Species, List<Pair<Genome, Double>>> generateGenomeProbabilities(
 		@NotNull ReproductionConfig config, @NotNull List<Species> parentSpecies) {
-		// calculate the normalized genome probabilities for each species
 		return parentSpecies.stream().collect(Collectors.toMap(s -> s, s -> {
 			// Sort the genomes by fitness
 			List<Genome> sortedGenomes =
@@ -335,7 +333,6 @@ public class ReproductionHelper {
 		if (sConfig == null)
 			throw new IllegalArgumentException("No sexual reproduction configuration provided.");
 		List<Species> parentSpecies = collectParentSpecies(minimalSpeciesSize);
-		// calculate the normalized genome probabilities for each species
 		Map<Species, List<Pair<Genome, Double>>> parentGenomes =
 			generateGenomeProbabilities(config, parentSpecies);
 		List<Pair<Species, Double>> normalizedSpeciesProbabilities =
@@ -371,16 +368,31 @@ public class ReproductionHelper {
 	/**
 	 * Reproduces the population using asexual reproduction.
 	 *
-	 * @param target The target population size.
+	 * @param amount The amount of genomes to create.
 	 * @param config The configuration for the reproduction.
 	 * @param minimalSpeciesSize The adjusted minimal species size for reproduction.
 	 * @return The created genomes.
 	 */
 	@NotNull
-	public Collection<Genome> reproduceAsexually(int target, @NotNull ReproductionConfig config,
+	public Collection<Genome> reproduceAsexually(int amount, @NotNull ReproductionConfig config,
 		int minimalSpeciesSize) {
-		// TODO: Implement asexual reproduction
-		throw new UnsupportedOperationException("Asexual reproduction is not yet implemented.");
+		List<Species> parentSpecies = collectParentSpecies(minimalSpeciesSize);
+		Map<Species, List<Pair<Genome, Double>>> parentGenomes =
+			generateGenomeProbabilities(config, parentSpecies);
+		List<Pair<Species, Double>> normalizedSpeciesProbabilities =
+			generateSpeciesProbabilities(parentSpecies);
+		
+		List<Genome> newGenomes = new ArrayList<>();
+		
+		// create the new genomes
+		while (newGenomes.size() < amount) {
+			Species parentSpecies1 = selectSpecies(normalizedSpeciesProbabilities);
+			Genome parent1 = selectGenome(parentGenomes.get(parentSpecies1));
+			Genome child = parent1.copy(true);
+			newGenomes.add(child);
+		}
+		
+		return newGenomes;
 	}
 	
 	/**
