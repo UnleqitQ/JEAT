@@ -8,10 +8,7 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
@@ -46,6 +43,18 @@ public class Species implements Comparable<Species> {
 	 */
 	@NotNull
 	private final Map<UUID, Genome> genomes = new HashMap<>();
+	
+	/**
+	 * The stagnation fitness of the species
+	 */
+	@Nullable
+	private Double stagnationFitness;
+	
+	/**
+	 * The history of the stagnation fitness of the species
+	 */
+	@NotNull
+	private final List<Double> stagnationHistory = new ArrayList<>();
 	
 	/**
 	 * The representative genome of the species
@@ -170,7 +179,7 @@ public class Species implements Comparable<Species> {
 	 * Set the fitnesses of all genomes in the species to 0
 	 */
 	public void resetGenomeFitnesses() {
-		this.genomes.values().forEach(g->g.fitness(0));
+		this.genomes.values().forEach(g -> g.fitness(0));
 	}
 	
 	/**
@@ -206,6 +215,46 @@ public class Species implements Comparable<Species> {
 	@Override
 	public int hashCode() {
 		return id.hashCode();
+	}
+	
+	/**
+	 * Calculate the stagnation fitness of the species
+	 */
+	public void calculateStagnationFitness() {
+		this.stagnationFitness =
+			jeat.config().stagnation.fitnessFunction.applyAsDouble(genomes.values());
+	}
+	
+	/**
+	 * Get the stagnation fitness of the species
+	 * @return The stagnation fitness of the species
+	 */
+	public double stagnationFitness() {
+		if (this.stagnationFitness == null) calculateStagnationFitness();
+		return this.stagnationFitness;
+	}
+	
+	/**
+	 * Reset the stagnation fitness of the species
+	 */
+	public void resetStagnationFitness() {
+		this.stagnationFitness = null;
+	}
+	
+	/**
+	 * Store the stagnation fitness of the species in the history
+	 */
+	public void storeStagnationFitness() {
+		this.stagnationHistory.add(stagnationFitness());
+	}
+	
+	/**
+	 * Get the history of the stagnation fitness of the species
+	 * @return The history of the stagnation fitness of the species
+	 */
+	@NotNull
+	public List<Double> stagnationHistory() {
+		return Collections.unmodifiableList(this.stagnationHistory);
 	}
 	
 }
