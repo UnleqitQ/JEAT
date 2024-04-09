@@ -5,6 +5,7 @@ import com.unleqitq.jeat.genetics.genome.Genome;
 import com.unleqitq.jeat.genetics.species.Species;
 import com.unleqitq.jeat.utils.tuple.Pair;
 import com.unleqitq.jeat.utils.tuple.Tuple;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +38,7 @@ public class Population {
 	 * The species in this population.
 	 */
 	@NotNull
+	@Getter(AccessLevel.PACKAGE)
 	private final Map<UUID, Species> species = new HashMap<>();
 	/**
 	 * A sorted list of species in this population.
