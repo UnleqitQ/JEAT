@@ -19,10 +19,7 @@ This project uses the following dependencies:
 
 ## Planned Features
 
-- Speciation
-- Stagnation
 - Extensible activation functions
-- Improve reproduction
 - Improve mutation
 - Improve crossover
 - Document the code
