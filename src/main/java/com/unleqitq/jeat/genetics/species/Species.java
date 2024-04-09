@@ -1,5 +1,6 @@
 package com.unleqitq.jeat.genetics.species;
 
+import com.unleqitq.jeat.Jeat;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -19,6 +20,12 @@ import java.util.stream.Collectors;
 @Accessors (fluent = true)
 public class Species {
 	
+	/**
+	 * The Jeat instance
+	 */
+	@Getter
+	@NotNull
+	private final Jeat jeat;
 	/**
 	 * The id of the species
 	 */
@@ -40,16 +47,16 @@ public class Species {
 	 * Create a new species with a given id
 	 * @param id The id of the species
 	 */
-	public Species(@NotNull UUID id) {
+	public Species(@NotNull Jeat jeat, @NotNull UUID id) {
+		this.jeat = jeat;
 		this.id = id;
-		this.fitness = null;
 	}
 	
 	/**
 	 * Create a new species with a random id
 	 */
-	public Species() {
-		this(UUID.randomUUID());
+	public Species(@NotNull Jeat jeat) {
+		this(jeat, UUID.randomUUID());
 	}
 	
 	/**
