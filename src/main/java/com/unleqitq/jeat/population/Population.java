@@ -27,6 +27,7 @@ public class Population {
 	 * The genomes in this population.
 	 */
 	@NotNull
+	@Getter (AccessLevel.PACKAGE)
 	private final Map<UUID, Genome> genomes = new HashMap<>();
 	/**
 	 * A sorted list of genomes in this population.
@@ -118,6 +119,28 @@ public class Population {
 	 */
 	public void remove(@NotNull Species species) {
 		this.species.remove(species.id());
+	}
+	
+	/**
+	 * Removes a species as well as all genomes in that species from this population.
+	 *
+	 * @param id The ID of the species to remove.
+	 */
+	public void decimateSpecies(@NotNull UUID id) {
+		Species species = this.species.get(id);
+		if (species != null) {
+			this.decimateSpecies(species);
+		}
+	}
+	
+	/**
+	 * Removes a species as well as all genomes in that species from this population.
+	 *
+	 * @param species The species to remove.
+	 */
+	public void decimateSpecies(@NotNull Species species) {
+		species.getGenomes().forEach(this::removeGenome);
+		this.removeSpecies(species);
 	}
 	
 	/**
