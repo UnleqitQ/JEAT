@@ -38,13 +38,20 @@ public class Population {
 	 * The species in this population.
 	 */
 	@NotNull
-	@Getter(AccessLevel.PACKAGE)
+	@Getter (AccessLevel.PACKAGE)
 	private final Map<UUID, Species> species = new HashMap<>();
 	/**
 	 * A sorted list of species in this population.
 	 */
 	@Nullable
 	private List<Species> sortedSpecies = null;
+	
+	// Helpers
+	/**
+	 * Helper instance for species stagnation.
+	 */
+	@NotNull
+	private final StagnationHelper stagnationHelper;
 	
 	
 	/**
@@ -54,6 +61,7 @@ public class Population {
 	 */
 	public Population(@NotNull Jeat jeat) {
 		this.jeat = jeat;
+		this.stagnationHelper = new StagnationHelper(this);
 	}
 	
 	/**
@@ -418,6 +426,14 @@ public class Population {
 		return sortedSpecies().subList(0, Math.min(count, sortedSpecies().size()));
 	}
 	
-	
+	/**
+	 * Stagnates the species in this population.
+	 *
+	 * @param addToHistory If {@code true}, the stagnation fitness of all species will be added to their history.
+	 * @return The Collection of species that have been stagnated.
+	 */
+	public Collection<Species> stagnate(boolean addToHistory) {
+		return stagnationHelper.stagnate(addToHistory);
+	}
 	
 }
