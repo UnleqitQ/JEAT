@@ -26,17 +26,20 @@ public class Species {
 	@Getter
 	@NotNull
 	private final Jeat jeat;
+	
 	/**
 	 * The id of the species
 	 */
 	@Getter
 	@NotNull
 	private final UUID id;
+	
 	/**
 	 * The fitness of the species
 	 */
 	@Nullable
 	private Double fitness;
+	
 	/**
 	 * The genomes in the species
 	 */
@@ -44,19 +47,27 @@ public class Species {
 	private final Map<UUID, Genome> genomes = new HashMap<>();
 	
 	/**
+	 * The representative genome of the species
+	 */
+	@NotNull
+	@Getter
+	private Genome representative;
+	
+	/**
 	 * Create a new species with a given id
 	 * @param id The id of the species
 	 */
-	public Species(@NotNull Jeat jeat, @NotNull UUID id) {
+	public Species(@NotNull Jeat jeat, @NotNull UUID id, @NotNull Genome representative) {
 		this.jeat = jeat;
 		this.id = id;
+		this.representative = representative;
 	}
 	
 	/**
 	 * Create a new species with a random id
 	 */
-	public Species(@NotNull Jeat jeat) {
-		this(jeat, UUID.randomUUID());
+	public Species(@NotNull Jeat jeat, @NotNull Genome representative) {
+		this(jeat, UUID.randomUUID(), representative);
 	}
 	
 	/**
