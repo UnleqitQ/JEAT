@@ -36,4 +36,10 @@ public class JeatConfig {
 	@NotNull
 	public DistanceConfig distance;
 	
+	/**
+	 * The configuration for the stagnation of species.
+	 */
+	@NotNull
+	public StagnationConfig stagnation;
+	
 }

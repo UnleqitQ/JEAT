@@ -5,10 +5,9 @@ import com.unleqitq.jeat.activationFunction.functions.SigmoidActivationFunction;
 import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.aggregationFunction.functions.SumAggregationFunction;
 import com.unleqitq.jeat.config.JeatConfig;
-import com.unleqitq.jeat.genetics.genome.GenomeStore;
 import com.unleqitq.jeat.jeat.ConnectionDefinitionStore;
-import com.unleqitq.jeat.jeat.GenomeHelper;
 import com.unleqitq.jeat.jeat.NodeDefinitionStore;
+import com.unleqitq.jeat.population.Population;
 import com.unleqitq.jeat.utils.RandomElementList;
 import lombok.Getter;
 import lombok.Setter;
@@ -73,19 +72,6 @@ public class Jeat {
 	 */
 	@NotNull
 	private final ConnectionDefinitionStore connectionDefinitions = new ConnectionDefinitionStore();
-	/**
-	 * The store that contains all the genomes, that are currently managed by JEAT,
-	 * but you can also add genomes to this store manually or remove them etc.
-	 */
-	@NotNull
-	private final GenomeStore genomeStore = new GenomeStore();
-	
-	// Helpers
-	/**
-	 * The helper that contains methods which have to do with genomes.
-	 */
-	@NotNull
-	private final GenomeHelper genomeHelper = new GenomeHelper(this);
 	
 	/**
 	 * Creates a new instance of JEAT with the given configuration.
@@ -94,6 +80,16 @@ public class Jeat {
 	 */
 	public Jeat(@NotNull JeatConfig config) {
 		this.config = config;
+	}
+	
+	/**
+	 * Creates a new Population that is based on this instance of JEAT.
+	 *
+	 * @return The new Population
+	 */
+	@NotNull
+	public Population createPopulation() {
+		return new Population(this);
 	}
 	
 }
