@@ -89,6 +89,12 @@ public class ReproductionConfig {
 	@Builder
 	public static class SexualReproductionConfig {
 		
+		/**
+		 * The probability of selecting a genome from the same species for mating. (if possible)
+		 */
+		@Builder.Default
+		public double interspeciesMatingProbability = 0.1;
+		
 	}
 	
 }
