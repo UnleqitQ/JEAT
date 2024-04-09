@@ -3,7 +3,6 @@ package com.unleqitq.jeat.genetics.genome;
 import com.unleqitq.jeat.Jeat;
 import com.unleqitq.jeat.config.CrossoverConfig;
 import com.unleqitq.jeat.config.InitialStructureConfig;
-import com.unleqitq.jeat.config.MutationConfig;
 import com.unleqitq.jeat.genetics.gene.connection.ConnectionGene;
 import com.unleqitq.jeat.genetics.gene.connection.ConnectionGeneDefinition;
 import com.unleqitq.jeat.genetics.gene.connection.ConnectionIdentifier;
@@ -185,130 +184,162 @@ public class Genome implements Comparable<Genome> {
 	}
 	
 	public void mutate() {
-		Random rnd = jeat.random();
-		MutationConfig cfg = jeat.config().mutation;
-		nodes.values().forEach(NodeGene::mutate);
-		connections.values().forEach(ConnectionGene::mutate);
+		mutateNodes();
+		mutateConnections();
 		{
-			MutationConfig.ConnectionMutationConfig.ConnectionStructureMutationConfig con =
-				cfg.connection.structure;
-			if (rnd.nextDouble() < con.addConnectionChance) {
-				for (int i = 0; i < con.addConnectionAttempts; i++) {
-					NodeGene<?, ?> n1 = getRandomNode(true, true);
-					if (n1 == null) break;
-					NodeGene<?, ?> n2 = getRandomNode(!n1.input(), true);
-					if (n2 == null) continue;
-					if (n1.x() == n2.x()) {
-						continue;
-					}
-					NodeGene<?, ?> from = n1.x() < n2.x() ? n1 : n2;
-					NodeGene<?, ?> to = n1.x() < n2.x() ? n2 : n1;
-					ConnectionIdentifier id = new ConnectionIdentifier(from.id(), to.id());
-					if (connections.containsKey(id)) {
-						continue;
-					}
-					ConnectionGene conGene = jeat.connectionDefinitions()
-						.createGene(id, this, () -> new ConnectionGeneDefinition(id));
-					addConnection(conGene);
-					break;
-				}
-			}
-			Set.copyOf(connections.values())
-				.stream()
-				.filter(c -> rnd.nextDouble() < con.removeConnectionChance)
-				.forEach(c -> {
-					if (c.from().inputs().size() > 1 && c.to().outputs().size() > 1) {
-						removeConnection(c);
-					}
-				});
+			mutateAddConnections();
+			mutateRemoveConnections();
 		}
 		{
-			MutationConfig.NodeMutationConfig.NodeStructureMutationConfig nd = cfg.node.structure;
-			if (rnd.nextDouble() < nd.removeNodeChance) {
-				NodeGene<?, ?> node = getRandomNode(true, false);
-				if (node != null) {
-					node.connections().forEach(this::removeConnection);
-					removeNode(node);
-				}
+			mutateRemoveNodes();
+			mutateCombineNodeInputs();
+			mutateCombineNodeOutputs();
+			mutateSplitConnection();
+		}
+	}
+	
+	private void mutateSplitConnection() {
+		if (jeat.random().nextDouble() < jeat.config().mutation.node.structure.add.splitChance) {
+			ConnectionGene con = getRandomConnection();
+			if (con != null) {
+				NodeGene<?, ?> from = con.from();
+				NodeGene<?, ?> to = con.to();
+				double newX = (from.x() + to.x()) / 2;
+				WorkingNodeGeneDefinition def = new WorkingNodeGeneDefinition(newX);
+				WorkingNodeGene n2 = def.createGene(this);
+				jeat.nodeDefinitions().add(def);
+				addNode(n2);
+				ConnectionIdentifier id1 = new ConnectionIdentifier(from.id(), n2.id());
+				ConnectionGene conGene1 = jeat.connectionDefinitions()
+					.createGene(id1, this, () -> new ConnectionGeneDefinition(id1))
+					.weight(1);
+				addConnection(conGene1);
+				ConnectionIdentifier id2 = new ConnectionIdentifier(n2.id(), to.id());
+				ConnectionGene conGene2 = jeat.connectionDefinitions()
+					.createGene(id2, this, () -> new ConnectionGeneDefinition(id2))
+					.weight(con.weight());
+				addConnection(conGene2);
+				removeConnection(con.id());
 			}
-			if (rnd.nextDouble() < nd.add.combineInputsChance) {
-				NodeGene<?, ?> n1 = getRandomNode(false, true);
-				if (n1 != null) {
-					Collection<ConnectionGene> cons = n1.inputs();
-					if (cons.size() > 1) {
-						double maxX = cons.stream().mapToDouble(c -> c.from().x()).max().orElse(0);
-						double newX = (n1.x() + maxX) / 2;
-						WorkingNodeGeneDefinition def = new WorkingNodeGeneDefinition(newX);
-						WorkingNodeGene n2 = def.createGene(this);
-						jeat.nodeDefinitions().add(def);
-						addNode(n2);
-						cons.forEach(c -> {
-							ConnectionIdentifier id = new ConnectionIdentifier(c.from().id(), n2.id());
-							ConnectionGene conGene = jeat.connectionDefinitions()
-								.createGene(id, this, () -> new ConnectionGeneDefinition(id))
-								.weight(c.weight());
-							addConnection(conGene);
-							removeConnection(c.id());
-						});
-						ConnectionGene conGene = jeat.connectionDefinitions()
-							.createGene(new ConnectionIdentifier(n2.id(), n1.id()), this,
-								() -> new ConnectionGeneDefinition(new ConnectionIdentifier(n2.id(), n1.id())))
-							.weight(1);
-						addConnection(conGene);
-					}
-				}
-			}
-			if (rnd.nextDouble() < nd.add.combineOutputsChance) {
-				NodeGene<?, ?> n1 = getRandomNode(true, true);
-				if (n1 != null) {
-					Collection<ConnectionGene> cons = n1.outputs();
-					if (cons.size() > 1) {
-						double minX = cons.stream().mapToDouble(c -> c.to().x()).min().orElse(0);
-						double newX = (n1.x() + minX) / 2;
-						WorkingNodeGeneDefinition def = new WorkingNodeGeneDefinition(newX);
-						WorkingNodeGene n2 = def.createGene(this);
-						jeat.nodeDefinitions().add(def);
-						addNode(n2);
-						cons.forEach(c -> {
-							ConnectionIdentifier id = new ConnectionIdentifier(n2.id(), c.to().id());
-							ConnectionGene conGene = jeat.connectionDefinitions()
-								.createGene(id, this, () -> new ConnectionGeneDefinition(id))
-								.weight(c.weight());
-							addConnection(conGene);
-							removeConnection(c.id());
-						});
-						ConnectionGene conGene = jeat.connectionDefinitions()
-							.createGene(new ConnectionIdentifier(n1.id(), n2.id()), this,
-								() -> new ConnectionGeneDefinition(new ConnectionIdentifier(n1.id(), n2.id())))
-							.weight(1);
-						addConnection(conGene);
-					}
-				}
-			}
-			if (rnd.nextDouble() < nd.add.splitChance) {
-				ConnectionGene con = getRandomConnection();
-				if (con != null) {
-					NodeGene<?, ?> from = con.from();
-					NodeGene<?, ?> to = con.to();
-					double newX = (from.x() + to.x()) / 2;
+		}
+	}
+	
+	private void mutateCombineNodeOutputs() {
+		if (jeat.random().nextDouble() <
+			jeat.config().mutation.node.structure.add.combineOutputsChance) {
+			NodeGene<?, ?> n1 = getRandomNode(true, true);
+			if (n1 != null) {
+				Collection<ConnectionGene> cons = n1.outputs();
+				if (cons.size() > 1) {
+					double minX = cons.stream().mapToDouble(c -> c.to().x()).min().orElse(0);
+					double newX = (n1.x() + minX) / 2;
 					WorkingNodeGeneDefinition def = new WorkingNodeGeneDefinition(newX);
 					WorkingNodeGene n2 = def.createGene(this);
 					jeat.nodeDefinitions().add(def);
 					addNode(n2);
-					ConnectionIdentifier id1 = new ConnectionIdentifier(from.id(), n2.id());
-					ConnectionGene conGene1 = jeat.connectionDefinitions()
-						.createGene(id1, this, () -> new ConnectionGeneDefinition(id1))
+					cons.forEach(c -> {
+						ConnectionIdentifier id = new ConnectionIdentifier(n2.id(), c.to().id());
+						ConnectionGene conGene = jeat.connectionDefinitions()
+							.createGene(id, this, () -> new ConnectionGeneDefinition(id))
+							.weight(c.weight());
+						addConnection(conGene);
+						removeConnection(c.id());
+					});
+					ConnectionGene conGene = jeat.connectionDefinitions()
+						.createGene(new ConnectionIdentifier(n1.id(), n2.id()), this,
+							() -> new ConnectionGeneDefinition(new ConnectionIdentifier(n1.id(), n2.id())))
 						.weight(1);
-					addConnection(conGene1);
-					ConnectionIdentifier id2 = new ConnectionIdentifier(n2.id(), to.id());
-					ConnectionGene conGene2 = jeat.connectionDefinitions()
-						.createGene(id2, this, () -> new ConnectionGeneDefinition(id2))
-						.weight(con.weight());
-					addConnection(conGene2);
-					removeConnection(con.id());
+					addConnection(conGene);
 				}
 			}
 		}
+	}
+	
+	private void mutateCombineNodeInputs() {
+		if (jeat.random().nextDouble() <
+			jeat.config().mutation.node.structure.add.combineInputsChance) {
+			NodeGene<?, ?> n1 = getRandomNode(false, true);
+			if (n1 != null) {
+				Collection<ConnectionGene> cons = n1.inputs();
+				if (cons.size() > 1) {
+					double maxX = cons.stream().mapToDouble(c -> c.from().x()).max().orElse(0);
+					double newX = (n1.x() + maxX) / 2;
+					WorkingNodeGeneDefinition def = new WorkingNodeGeneDefinition(newX);
+					WorkingNodeGene n2 = def.createGene(this);
+					jeat.nodeDefinitions().add(def);
+					addNode(n2);
+					cons.forEach(c -> {
+						ConnectionIdentifier id = new ConnectionIdentifier(c.from().id(), n2.id());
+						ConnectionGene conGene = jeat.connectionDefinitions()
+							.createGene(id, this, () -> new ConnectionGeneDefinition(id))
+							.weight(c.weight());
+						addConnection(conGene);
+						removeConnection(c.id());
+					});
+					ConnectionGene conGene = jeat.connectionDefinitions()
+						.createGene(new ConnectionIdentifier(n2.id(), n1.id()), this,
+							() -> new ConnectionGeneDefinition(new ConnectionIdentifier(n2.id(), n1.id())))
+						.weight(1);
+					addConnection(conGene);
+				}
+			}
+		}
+	}
+	
+	private void mutateRemoveNodes() {
+		if (jeat.random().nextDouble() < jeat.config().mutation.node.structure.removeNodeChance) {
+			NodeGene<?, ?> node = getRandomNode(true, false);
+			if (node != null) {
+				node.connections().forEach(this::removeConnection);
+				removeNode(node);
+			}
+		}
+	}
+	
+	private void mutateRemoveConnections() {
+		double removeConnectionChance =
+			jeat.config().mutation.connection.structure.removeConnectionChance;
+		Set.copyOf(connections.values())
+			.stream()
+			.filter(c -> jeat.random().nextDouble() < removeConnectionChance)
+			.forEach(c -> {
+				if (c.from().inputs().size() > 1 && c.to().outputs().size() > 1) {
+					removeConnection(c);
+				}
+			});
+	}
+	
+	private void mutateAddConnections() {
+		if (jeat.random().nextDouble() <
+			jeat.config().mutation.connection.structure.addConnectionChance) {
+			for (int i = 0; i < jeat.config().mutation.connection.structure.addConnectionAttempts; i++) {
+				NodeGene<?, ?> n1 = getRandomNode(true, true);
+				if (n1 == null) break;
+				NodeGene<?, ?> n2 = getRandomNode(!n1.input(), true);
+				if (n2 == null) continue;
+				if (n1.x() == n2.x()) {
+					continue;
+				}
+				NodeGene<?, ?> from = n1.x() < n2.x() ? n1 : n2;
+				NodeGene<?, ?> to = n1.x() < n2.x() ? n2 : n1;
+				ConnectionIdentifier id = new ConnectionIdentifier(from.id(), to.id());
+				if (connections.containsKey(id)) {
+					continue;
+				}
+				ConnectionGene conGene =
+					jeat.connectionDefinitions().createGene(id, this, () -> new ConnectionGeneDefinition(id));
+				addConnection(conGene);
+				break;
+			}
+		}
+	}
+	
+	private void mutateConnections() {
+		connections.values().forEach(ConnectionGene::mutate);
+	}
+	
+	private void mutateNodes() {
+		nodes.values().forEach(NodeGene::mutate);
 	}
 	
 	@Nullable
