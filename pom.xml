@@ -7,6 +7,7 @@
 	<groupId>com.unleqitq</groupId>
 	<artifactId>JEAT</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
+	<name>JEAT</name>
 
 	<properties>
 		<maven.compiler.source>21</maven.compiler.source>
@@ -14,9 +15,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<lombok-version>1.18.30</lombok-version>
-		<commons-lang3-version>3.12.0</commons-lang3-version>
-		<commons-collection4-version>4.4</commons-collection4-version>
-		<commons-math3-version>3.6.1</commons-math3-version>
 		<jetbrains-annotations-version>22.0.0</jetbrains-annotations-version>
 	</properties>
 
@@ -58,9 +56,13 @@
 				<executions>
 					<execution>
 						<id>attach-sources</id>
+						<phase>package</phase>
 						<goals>
-							<goal>jar</goal>
+							<goal>jar-no-fork</goal>
 						</goals>
+						<configuration>
+							<excludeResources>true</excludeResources>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -86,6 +88,12 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 
 	<distributionManagement>
