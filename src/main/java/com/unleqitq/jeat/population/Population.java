@@ -8,6 +8,7 @@ import com.unleqitq.jeat.utils.tuple.Tuple;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -26,12 +27,22 @@ public class Population {
 	 */
 	@NotNull
 	private final Map<UUID, Genome> genomes = new HashMap<>();
+	/**
+	 * A sorted list of genomes in this population.
+	 */
+	@Nullable
+	private List<Genome> sortedGenomes = null;
 	
 	/**
 	 * The species in this population.
 	 */
 	@NotNull
 	private final Map<UUID, Species> species = new HashMap<>();
+	/**
+	 * A sorted list of species in this population.
+	 */
+	@Nullable
+	private List<Species> sortedSpecies = null;
 	
 	
 	/**
@@ -299,7 +310,112 @@ public class Population {
 		Set.copyOf(this.species.values()).stream().filter(Species::isEmpty).forEach(this::remove);
 		
 		// Reset the fitness of all species and genomes
-		this.species.values().stream().peek(Species::resetFitness).forEach(Species::resetGenomeFitnesses);
+		this.species.values()
+			.stream()
+			.peek(Species::resetFitness)
+			.forEach(Species::resetGenomeFitnesses);
 	}
-
+	
+	/**
+	 * Resets the fitness of all genomes in this population.
+	 */
+	public void resetGenomeFitnesses() {
+		this.genomes.values().forEach(g -> g.fitness(0));
+		invalidateGenomeFitnesses();
+	}
+	
+	/**
+	 * Resets the fitness of all species in this population.
+	 */
+	public void resetSpeciesFitnesses() {
+		this.species.values().forEach(Species::resetFitness);
+		invalidateSpeciesFitnesses();
+	}
+	
+	/**
+	 * Removes the sorted genomes list, causing it to be recalculated on the next access.
+	 */
+	public void invalidateGenomeFitnesses() {
+		sortedGenomes = null;
+	}
+	
+	/**
+	 * Removes the sorted species list, causing it to be recalculated on the next access.
+	 */
+	public void invalidateSpeciesFitnesses() {
+		sortedSpecies = null;
+	}
+	
+	/**
+	 * Gets a sorted list of genomes in this population. The list is sorted by fitness in descending order.
+	 *
+	 * @return A sorted list of genomes in this population.
+	 */
+	@NotNull
+	public List<Genome> sortedGenomes() {
+		if (sortedGenomes == null) {
+			sortedGenomes = new ArrayList<>(genomes.values());
+			sortedGenomes.sort(Comparator.comparingDouble(g -> -g.fitness()));
+		}
+		return Collections.unmodifiableList(sortedGenomes);
+	}
+	
+	/**
+	 * Gets a sorted list of species in this population. The list is sorted by fitness in descending order.
+	 *
+	 * @return A sorted list of species in this population.
+	 */
+	@NotNull
+	public List<Species> sortedSpecies() {
+		if (sortedSpecies == null) {
+			sortedSpecies = new ArrayList<>(species.values());
+			sortedSpecies.sort(Comparator.comparingDouble(s -> -s.fitness()));
+		}
+		return Collections.unmodifiableList(sortedSpecies);
+	}
+	
+	/**
+	 * Gets the fittest genome in this population.
+	 *
+	 * @return The fittest genome in this population, or {@code null} if no genomes exist.
+	 */
+	@Nullable
+	public Genome fittestGenome() {
+		return sortedGenomes().isEmpty() ? null : sortedGenomes().getFirst();
+	}
+	
+	/**
+	 * Gets the fittest species in this population.
+	 *
+	 * @return The fittest species in this population, or {@code null} if no species exist.
+	 */
+	@Nullable
+	public Species fittestSpecies() {
+		return sortedSpecies().isEmpty() ? null : sortedSpecies().getFirst();
+	}
+	
+	/**
+	 * Gets the fittest genomes in this population. The list is sorted by fitness in descending order.
+	 *
+	 * @param count The number of genomes to get.
+	 * @return The fittest genomes in this population.
+	 */
+	@NotNull
+	public List<Genome> fittestGenomes(int count) {
+		return sortedGenomes().subList(0, Math.min(count, sortedGenomes().size()));
+	}
+	
+	/**
+	 * Gets the fittest species in this population. The list is sorted by fitness in descending order.
+	 *
+	 * @param count The number of species to get.
+	 * @return The fittest species in this population.
+	 */
+	@NotNull
+	public List<Species> fittestSpecies(int count) {
+		return sortedSpecies().subList(0, Math.min(count, sortedSpecies().size()));
+	}
+	
+	
+	
 }
