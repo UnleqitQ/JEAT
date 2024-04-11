@@ -22,7 +22,7 @@ public class WorkingNeuron extends Neuron {
 	
 	WorkingNeuron(@NotNull WorkingNodeGene gene) {
 		super(gene);
-		this.activationFunction = gene.activationFunction();
+		this.activationFunction = gene.activationFunction().copy();
 		this.aggregationFunction = gene.aggregationFunction();
 		this.response = gene.response();
 		connections = new ArrayList<>();
