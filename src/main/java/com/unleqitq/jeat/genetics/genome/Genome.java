@@ -434,7 +434,9 @@ public class Genome implements Comparable<Genome> {
 				(int) (Math.min(cfg.thinOutPercentage, 1) * createdConnections.size() * rnd.nextDouble());
 			for (int i = 0; i < cnt; i++) {
 				ConnectionIdentifier id = createdConnections.get(rnd.nextInt(createdConnections.size()));
-				genome.removeConnection(id);
+				ConnectionGene con = genome.connection(id);
+				if (con != null && con.from().outputs().size() > 1 && con.to().inputs().size() > 1)
+					genome.removeConnection(id);
 			}
 		}
 		
