@@ -42,6 +42,18 @@ public class DistanceConfig {
 		@Builder.Default
 		public double aggregationFunctionCoefficient = 0.2;
 		
+		/**
+		 * The factor that the response difference is multiplied with.
+		 */
+		@Builder.Default
+		public double responseCoefficient = 0.1;
+		
+		/**
+		 * The maximum response difference to be used in the distance calculation. If the difference is greater, this value is used instead.
+		 */
+		@Builder.Default
+		public double maxResponseDifference = 5.0;
+		
 	}
 	
 	/**
