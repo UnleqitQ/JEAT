@@ -77,7 +77,7 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 	public WorkingNodeGene copy(@NotNull Genome genome) {
 		WorkingNodeGene copy = new WorkingNodeGene(genome, definition());
 		copy.enabled = enabled;
-		copy.activationFunction = activationFunction;
+		copy.activationFunction = activationFunction.copy();
 		copy.aggregationFunction = aggregationFunction;
 		copy.response = response;
 		return copy;
