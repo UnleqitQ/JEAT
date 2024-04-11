@@ -71,6 +71,13 @@ public interface ActivationFunction {
 		 */
 		void mutate();
 		
+		/**
+		 * Creates a copy of the parameter
+		 * @return the copy of the parameter
+		 */
+		@NotNull
+		IParameter copy();
+		
 	}
 	
 	@Builder
@@ -180,6 +187,14 @@ public interface ActivationFunction {
 				} while (definition.invalidValues().contains(newValue));
 				value = newValue;
 			}
+		}
+		
+		@Override
+		@NotNull
+		public SimpleParameter copy() {
+			SimpleParameter copy = new SimpleParameter(jeat, name, definition);
+			copy.value = value;
+			return copy;
 		}
 		
 	}
