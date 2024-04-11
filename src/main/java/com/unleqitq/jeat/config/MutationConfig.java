@@ -109,6 +109,12 @@ public class MutationConfig {
 			@Builder.Default
 			public double changeActivationFunctionChance = 0.01;
 			
+			/**
+			 * The chance of changing the parameters of the activation function.
+			 */
+			@Builder.Default
+			public double changeActivationFunctionParametersChance = 0.1;
+			
 		}
 		
 		/**

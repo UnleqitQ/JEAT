@@ -52,6 +52,9 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 			if (newActivationFunction != null)
 				activationFunction = new ActivationFunctionReference(jeat(), newActivationFunction);
 		}
+		if (rnd.nextDouble() < config.activation.changeActivationFunctionParametersChance) {
+			activationFunction.mutate();
+		}
 		if (definition().lockedAggregationFunction() == null &&
 			rnd.nextDouble() < config.aggregation.changeAggregationFunctionChance) {
 			aggregationFunction =
