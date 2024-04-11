@@ -18,11 +18,13 @@ public class WorkingNeuron extends Neuron {
 	private final AggregationFunction aggregationFunction;
 	@NotNull
 	private final List<Connection> connections;
+	private final double response;
 	
 	WorkingNeuron(@NotNull WorkingNodeGene gene) {
 		super(gene);
 		this.activationFunction = gene.activationFunction();
 		this.aggregationFunction = gene.aggregationFunction();
+		this.response = gene.response();
 		connections = new ArrayList<>();
 	}
 	
@@ -39,7 +41,7 @@ public class WorkingNeuron extends Neuron {
 			values.add(connection.getValue());
 		}
 		double net = aggregationFunction.calculate(values);
-		value = activationFunction.calculate(net);
+		value = activationFunction.calculate(net) * response;
 		calculated = true;
 	}
 	
