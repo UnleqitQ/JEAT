@@ -1,6 +1,7 @@
 package com.unleqitq.jeat.genetics.gene.node.working;
 
 import com.unleqitq.jeat.activationFunction.ActivationFunction;
+import com.unleqitq.jeat.activationFunction.ActivationFunctionReference;
 import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.config.MutationConfig;
 import com.unleqitq.jeat.genetics.gene.node.NodeGene;
@@ -18,7 +19,7 @@ import java.util.Random;
 @Setter
 public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDefinition> {
 	
-	private ActivationFunction activationFunction;
+	private ActivationFunctionReference activationFunction;
 	private AggregationFunction aggregationFunction;
 	private boolean enabled = true;
 	private double response = 1.0;
@@ -29,7 +30,8 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 			activationFunction = definition.lockedActivationFunction();
 		}
 		else {
-			activationFunction = jeat().defaultActivationFunction();
+			activationFunction = new ActivationFunctionReference(jeat(),
+				jeat().defaultActivationFunction());
 		}
 		if (definition.lockedAggregationFunction() != null) {
 			aggregationFunction = definition.lockedAggregationFunction();
@@ -45,7 +47,10 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 		Random rnd = jeat().random();
 		if (definition().lockedActivationFunction() == null &&
 			rnd.nextDouble() < config.activation.changeActivationFunctionChance) {
-			activationFunction = jeat().activationFunctions().getRandomElement(rnd, activationFunction);
+			ActivationFunction newActivationFunction =
+				jeat().activationFunctions().getRandomElement(rnd, null);
+			if (newActivationFunction != null)
+				activationFunction = new ActivationFunctionReference(jeat(), newActivationFunction);
 		}
 		if (definition().lockedAggregationFunction() == null &&
 			rnd.nextDouble() < config.aggregation.changeAggregationFunctionChance) {

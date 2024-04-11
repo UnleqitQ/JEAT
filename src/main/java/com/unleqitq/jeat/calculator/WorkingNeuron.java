@@ -1,6 +1,6 @@
 package com.unleqitq.jeat.calculator;
 
-import com.unleqitq.jeat.activationFunction.ActivationFunction;
+import com.unleqitq.jeat.activationFunction.ActivationFunctionReference;
 import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.genetics.gene.node.working.WorkingNodeGene;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,7 @@ public class WorkingNeuron extends Neuron {
 	private boolean calculated;
 	private double value;
 	@NotNull
-	private final ActivationFunction activationFunction;
+	private final ActivationFunctionReference activationFunction;
 	@NotNull
 	private final AggregationFunction aggregationFunction;
 	@NotNull

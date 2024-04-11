@@ -1,13 +1,12 @@
 package com.unleqitq.jeat.config;
 
-import com.unleqitq.jeat.activationFunction.ActivationFunction;
+import com.unleqitq.jeat.activationFunction.ActivationFunctionReference;
 import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import lombok.Builder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * The configuration of the initial structure of the genome.<br>
@@ -68,7 +67,7 @@ public class InitialStructureConfig {
 		 */
 		@Nullable
 		@Builder.Default
-		public ActivationFunction lockedActivationFunction = null;
+		public ActivationFunctionReference lockedActivationFunction = null;
 		
 		/**
 		 * The aggregation function if you want to lock it.

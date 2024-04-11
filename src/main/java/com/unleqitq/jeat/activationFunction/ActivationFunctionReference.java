@@ -81,6 +81,7 @@ public class ActivationFunctionReference {
 	/**
 	 * Creates a copy of the activation function reference
 	 */
+	@NotNull
 	public ActivationFunctionReference copy() {
 		return new ActivationFunctionReference(jeat, activationFunction, parameters.entrySet()
 			.stream()

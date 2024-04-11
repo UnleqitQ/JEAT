@@ -74,7 +74,7 @@ public class Genome implements Comparable<Genome> {
 			NodeGene<?, ?> node = jeat.nodeDefinitions()
 				.createGene(nc.name, this,
 					() -> new WorkingNodeGeneDefinition(nc.x, nc.name).removable(false)
-						.lockedActivationFunction(nc.lockedActivationFunction)
+						.lockedActivationFunction(nc.lockedActivationFunction.copy())
 						.lockedAggregationFunction(nc.lockedAggregationFunction)
 						.canDisable(nc.canDisable));
 			addNode(node);
