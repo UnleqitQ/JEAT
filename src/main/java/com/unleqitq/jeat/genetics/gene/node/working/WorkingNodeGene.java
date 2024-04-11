@@ -27,7 +27,8 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 	public WorkingNodeGene(@NotNull Genome genome, @NotNull WorkingNodeGeneDefinition definition) {
 		super(genome, definition);
 		if (definition.lockedActivationFunction() != null) {
-			activationFunction = definition.lockedActivationFunction();
+			activationFunction =
+				new ActivationFunctionReference(jeat(), definition.lockedActivationFunction());
 		}
 		else {
 			activationFunction =

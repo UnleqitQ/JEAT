@@ -1,5 +1,6 @@
 package com.unleqitq.jeat.genetics.gene.node.working;
 
+import com.unleqitq.jeat.activationFunction.ActivationFunction;
 import com.unleqitq.jeat.activationFunction.ActivationFunctionReference;
 import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.genetics.gene.node.NodeGeneDefinition;
@@ -19,7 +20,7 @@ public class WorkingNodeGeneDefinition
 	extends NodeGeneDefinition<WorkingNodeGeneDefinition, WorkingNodeGene> {
 	
 	@Nullable
-	private ActivationFunctionReference lockedActivationFunction;
+	private ActivationFunction lockedActivationFunction;
 	@Nullable
 	private AggregationFunction lockedAggregationFunction;
 	private boolean canDisable = true;
@@ -46,7 +47,7 @@ public class WorkingNodeGeneDefinition
 	public WorkingNodeGene createGene(@NotNull Genome genome) {
 		WorkingNodeGene gene = new WorkingNodeGene(genome, this);
 		if (lockedActivationFunction != null) {
-			gene.activationFunction(lockedActivationFunction);
+			gene.activationFunction(new ActivationFunctionReference(genome.jeat(), lockedActivationFunction));
 		}
 		if (lockedAggregationFunction != null) {
 			gene.aggregationFunction(lockedAggregationFunction);
