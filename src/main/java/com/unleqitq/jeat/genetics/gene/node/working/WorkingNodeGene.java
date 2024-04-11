@@ -55,6 +55,13 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 		if (definition().canDisable() && rnd.nextDouble() < config.structure.toggleNodeChance) {
 			enabled = !enabled;
 		}
+		if (rnd.nextDouble() < config.response.mutateResponseChance) {
+			response +=
+				rnd.nextDouble(-config.response.mutateResponseRange, config.response.mutateResponseRange);
+			if (config.response.hasBounds) {
+				response = Math.min(Math.max(response, -config.response.bounds), config.response.bounds);
+			}
+		}
 	}
 	
 	@Override
