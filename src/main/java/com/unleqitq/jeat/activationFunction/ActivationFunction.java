@@ -7,6 +7,7 @@ import lombok.Singular;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,6 +28,23 @@ public interface ActivationFunction {
 	@NotNull
 	default Set<IParameterDefinition> parameters() {
 		return Set.of();
+	}
+	
+	/**
+	 * calculates the distance between two parameter sets
+	 * @param parameters1 the first set of parameters
+	 * @param parameters2 the second set of parameters
+	 */
+	default double distance(@NotNull Collection<IParameter> parameters1, @NotNull Collection<IParameter> parameters2) {
+		double distance = 0;
+		for (IParameter parameter1 : parameters1) {
+			IParameter parameter2 = parameters2.stream().filter(p -> p.name().equals(parameter1.name()))
+				.findFirst().orElse(null);
+			if (parameter2 != null) {
+				distance += Math.abs(parameter1.value() - parameter2.value());
+			}
+		}
+		return distance;
 	}
 	
 	

@@ -37,6 +37,12 @@ public class DistanceConfig {
 		public double activationFunctionCoefficient = 0.2;
 		
 		/**
+		 * The distance used for different activation functions.
+		 */
+		@Builder.Default
+		public double activationFunctionParameterCoefficient = 0.05;
+		
+		/**
 		 * The distance used for different aggregation functions.
 		 */
 		@Builder.Default

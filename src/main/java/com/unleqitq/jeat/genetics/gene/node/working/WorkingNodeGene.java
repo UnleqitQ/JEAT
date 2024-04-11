@@ -30,8 +30,8 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 			activationFunction = definition.lockedActivationFunction();
 		}
 		else {
-			activationFunction = new ActivationFunctionReference(jeat(),
-				jeat().defaultActivationFunction());
+			activationFunction =
+				new ActivationFunctionReference(jeat(), jeat().defaultActivationFunction());
 		}
 		if (definition.lockedAggregationFunction() != null) {
 			aggregationFunction = definition.lockedAggregationFunction();
@@ -102,7 +102,13 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 		double distance = 0.0;
 		if (enabled != o.enabled) return jeat().config().distance.node.disjointCoefficient;
 		if (!enabled) return 0.0;
-		if (!activationFunction.equals(o.activationFunction)) {
+		if (activationFunction.activationFunction().equals(o.activationFunction.activationFunction())) {
+			distance += jeat().config().distance.node.activationFunctionParameterCoefficient *
+				activationFunction.activationFunction()
+					.distance(activationFunction.parameters().values(),
+						o.activationFunction.parameters().values());
+		}
+		else {
 			distance += jeat().config().distance.node.activationFunctionCoefficient;
 		}
 		if (!aggregationFunction.equals(o.aggregationFunction)) {
