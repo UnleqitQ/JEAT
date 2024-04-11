@@ -136,6 +136,10 @@ public class Calculator {
 			}
 		}
 		for (ConnectionGene gene : genome.connections().values()) {
+			if (!gene.enabled()) {
+				// No need to create disabled connections
+				continue;
+			}
 			Neuron from = neuronIdMap.get(gene.fromId());
 			Neuron to = neuronIdMap.get(gene.toId());
 			if (from == null || to == null) {
