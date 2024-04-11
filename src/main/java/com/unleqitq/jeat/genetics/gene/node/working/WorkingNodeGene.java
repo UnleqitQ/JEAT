@@ -21,6 +21,7 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 	private ActivationFunction activationFunction;
 	private AggregationFunction aggregationFunction;
 	private boolean enabled = true;
+	private double response = 1.0;
 	
 	public WorkingNodeGene(@NotNull Genome genome, @NotNull WorkingNodeGeneDefinition definition) {
 		super(genome, definition);
@@ -54,6 +55,13 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 		if (definition().canDisable() && rnd.nextDouble() < config.structure.toggleNodeChance) {
 			enabled = !enabled;
 		}
+		if (rnd.nextDouble() < config.response.mutateResponseChance) {
+			response +=
+				rnd.nextDouble(-config.response.mutateResponseRange, config.response.mutateResponseRange);
+			if (config.response.hasBounds) {
+				response = Math.min(Math.max(response, -config.response.bounds), config.response.bounds);
+			}
+		}
 	}
 	
 	@Override
@@ -63,6 +71,7 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 		copy.enabled = enabled;
 		copy.activationFunction = activationFunction;
 		copy.aggregationFunction = aggregationFunction;
+		copy.response = response;
 		return copy;
 	}
 	
@@ -90,6 +99,11 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 		}
 		if (!aggregationFunction.equals(o.aggregationFunction)) {
 			distance += jeat().config().distance.node.aggregationFunctionCoefficient;
+		}
+		{
+			double diff = response - o.response;
+			distance += jeat().config().distance.node.responseCoefficient *
+				Math.min(Math.abs(diff), jeat().config().distance.node.maxResponseDifference);
 		}
 		return distance;
 	}

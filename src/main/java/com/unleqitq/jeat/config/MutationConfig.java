@@ -42,6 +42,13 @@ public class MutationConfig {
 		@Builder.Default
 		public ActivationMutationConfig activation = ActivationMutationConfig.builder().build();
 		
+		/**
+		 * The configuration for mutating the response of a node.
+		 */
+		@NotNull
+		@Builder.Default
+		public ResponseMutationConfig response = ResponseMutationConfig.builder().build();
+		
 		@Builder
 		public static class NodeStructureMutationConfig {
 			
@@ -104,6 +111,38 @@ public class MutationConfig {
 			
 		}
 		
+		/**
+		 * The configuration for mutating the response of a node.
+		 */
+		@Builder
+		public static class ResponseMutationConfig {
+			
+			/**
+			 * The chance of mutating the response of a node.
+			 */
+			@Builder.Default
+			public double mutateResponseChance = 0.3;
+			
+			/**
+			 * The range of the amount of response that can be added or subtracted from a node.
+			 */
+			@Builder.Default
+			public double mutateResponseRange = 0.1;
+			
+			/**
+			 * Whether the response of a node has bounds.
+			 */
+			@Builder.Default
+			public boolean hasBounds = true;
+			
+			/**
+			 * The bounds of the response of a node (same value for positive and negative bounds).
+			 */
+			@Builder.Default
+			public double bounds = 2.0;
+			
+		}
+		
 	}
 	
 	@Builder
@@ -114,7 +153,8 @@ public class MutationConfig {
 		 */
 		@NotNull
 		@Builder.Default
-		public ConnectionStructureMutationConfig structure = ConnectionStructureMutationConfig.builder().build();
+		public ConnectionStructureMutationConfig structure =
+			ConnectionStructureMutationConfig.builder().build();
 		/**
 		 * The chance of mutating the weight of a connection.
 		 */
