@@ -25,6 +25,10 @@ public class ConnectionDefinitionStore {
 		return definitions.computeIfAbsent(id, k -> supplier.get());
 	}
 	
+	public int size() {
+		return definitions.size();
+	}
+	
 	public boolean has(ConnectionIdentifier id) {
 		return definitions.containsKey(id);
 	}

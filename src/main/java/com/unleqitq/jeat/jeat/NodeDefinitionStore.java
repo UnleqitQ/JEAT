@@ -43,6 +43,10 @@ public class NodeDefinitionStore {
 		return definition;
 	}
 	
+	public int size() {
+		return definitions.size();
+	}
+	
 	public boolean has(UUID id) {
 		return definitions.containsKey(id);
 	}
