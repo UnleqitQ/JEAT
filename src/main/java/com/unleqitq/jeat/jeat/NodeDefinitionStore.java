@@ -6,13 +6,12 @@ import com.unleqitq.jeat.genetics.genome.Genome;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 public class NodeDefinitionStore {
 	
-	private final Map<UUID, NodeGeneDefinition<?, ?>> definitions = new TreeMap<>();
+	private final Map<UUID, NodeGeneDefinition<?, ?>> definitions = new HashMap<>();
 	private final Map<String, NodeGeneDefinition<?, ?>> namedDefinitions = new HashMap<>();
 	
 	public void add(NodeGeneDefinition<?, ?> definition) {
@@ -41,6 +40,10 @@ public class NodeDefinitionStore {
 			add(definition);
 		}
 		return definition;
+	}
+	
+	public int size() {
+		return definitions.size();
 	}
 	
 	public boolean has(UUID id) {

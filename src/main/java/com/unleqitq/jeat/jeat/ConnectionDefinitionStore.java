@@ -5,13 +5,13 @@ import com.unleqitq.jeat.genetics.gene.connection.ConnectionGeneDefinition;
 import com.unleqitq.jeat.genetics.gene.connection.ConnectionIdentifier;
 import com.unleqitq.jeat.genetics.genome.Genome;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Supplier;
 
 public class ConnectionDefinitionStore {
 	
-	private final Map<ConnectionIdentifier, ConnectionGeneDefinition> definitions = new TreeMap<>();
+	private final Map<ConnectionIdentifier, ConnectionGeneDefinition> definitions = new HashMap<>();
 	
 	public void add(ConnectionGeneDefinition definition) {
 		definitions.put(definition.id(), definition);
@@ -23,6 +23,10 @@ public class ConnectionDefinitionStore {
 	
 	public ConnectionGeneDefinition get(ConnectionIdentifier id, Supplier<ConnectionGeneDefinition> supplier) {
 		return definitions.computeIfAbsent(id, k -> supplier.get());
+	}
+	
+	public int size() {
+		return definitions.size();
 	}
 	
 	public boolean has(ConnectionIdentifier id) {
