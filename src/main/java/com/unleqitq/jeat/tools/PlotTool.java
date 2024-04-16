@@ -152,7 +152,7 @@ public class PlotTool {
 			int xPixel1 = (int) ((x - config.xMin) / (config.xMax - config.xMin) * width);
 			if (Math.abs(xPixel1 - yAxisPosX) <= config.tickLength) continue;
 			int yPixel = xAxisPosY + (int) config.tickLength + fm.getHeight();
-			if (Math.abs(xPixel1) % config.tickLabelSpacing == 0) {
+			if (Math.abs(xPixel1 + config.xMin / xStep) % config.tickLabelSpacing == 0) {
 				String text = String.format(config.xTickFormat, x);
 				int textWidth = fm.stringWidth(text);
 				int textX = Math.max(5, Math.min(width - textWidth - 5, xPixel1 - textWidth / 2));
@@ -167,7 +167,7 @@ public class PlotTool {
 			int yPixel1 = (int) ((config.yMax - y) / (config.yMax - config.yMin) * height);
 			if (Math.abs(yPixel1 - xAxisPosY) <= config.tickLength) continue;
 			int xPixel = yAxisPosX - (int) config.tickLength - fm.stringWidth("0") - 5;
-			if (Math.abs(yPixel1) % config.tickLabelSpacing == 0) {
+			if (Math.abs(yPixel1 + config.yMin / yStep) % config.tickLabelSpacing == 0) {
 				String text = String.format(config.yTickFormat, y);
 				int textWidth = fm.stringWidth(text);
 				int textX = Math.max(5, Math.min(width - textWidth - 5, xPixel - textWidth));
