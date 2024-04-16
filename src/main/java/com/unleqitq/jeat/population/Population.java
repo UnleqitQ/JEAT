@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.ToDoubleFunction;
 
 @Accessors (fluent = true)
 public class Population {
@@ -413,6 +414,20 @@ public class Population {
 	}
 	
 	/**
+	 * Gets a sorted list of species in this population. The list is sorted by fitness in descending order.
+	 *
+	 * @param aggregationFunction The function to calculate the fitness of a species.
+	 * @return A sorted list of species in this population.
+	 */
+	@NotNull
+	public List<Species> sortedSpecies(
+		@NotNull ToDoubleFunction<Collection<Genome>> aggregationFunction) {
+		List<Species> sorted = new ArrayList<>(species.values());
+		sorted.sort(Comparator.comparingDouble(s -> -s.fitness(aggregationFunction)));
+		return Collections.unmodifiableList(sorted);
+	}
+	
+	/**
 	 * Gets the fittest genome in this population.
 	 *
 	 * @return The fittest genome in this population, or {@code null} if no genomes exist.
@@ -455,13 +470,42 @@ public class Population {
 	}
 	
 	/**
+	 * Gets the fittest species in this population. The list is sorted by fitness in descending order.
+	 *
+	 * @param count The number of species to get.
+	 * @param aggregationFunction The function to calculate the fitness of a species.
+	 * @return The fittest species in this population.
+	 */
+	@NotNull
+	public List<Species> fittestSpecies(int count,
+		@NotNull ToDoubleFunction<Collection<Genome>> aggregationFunction) {
+		List<Species> sorted = sortedSpecies(aggregationFunction);
+		return sorted.subList(0, Math.min(count, sorted.size()));
+	}
+	
+	/**
 	 * Stagnates the species in this population.
 	 *
 	 * @param addToHistory If {@code true}, the stagnation fitness of all species will be added to their history.
+	 * @param aggregationFunction The function to calculate the fitness of a species. (This is for the general fitness of the species and not the stagnation fitness)
 	 * @return The Collection of species that have been stagnated.
 	 */
-	public Collection<Species> stagnate(boolean addToHistory) {
-		return stagnationHelper.stagnate(addToHistory);
+	public Collection<Species> stagnate(boolean addToHistory,
+		@NotNull ToDoubleFunction<Collection<Genome>> aggregationFunction) {
+		return stagnationHelper.stagnate(addToHistory, aggregationFunction);
+	}
+	
+	/**
+	 * Stagnates the species in this population.
+	 *
+	 * @param addToHistory If {@code true}, the stagnation fitness of all species will be added to their history.
+	 * @param reproductionConfig The reproduction configuration (used to get the aggregation function).
+	 * @return The Collection of species that have been stagnated.
+	 */
+	@NotNull
+	public Collection<Species> stagnate(boolean addToHistory,
+		@NotNull ReproductionConfig reproductionConfig) {
+		return stagnationHelper.stagnate(addToHistory, reproductionConfig.aggregationFunction);
 	}
 	
 	/**

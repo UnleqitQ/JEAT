@@ -1,11 +1,13 @@
 package com.unleqitq.jeat.population;
 
 import com.unleqitq.jeat.Jeat;
+import com.unleqitq.jeat.genetics.genome.Genome;
 import com.unleqitq.jeat.genetics.species.Species;
 import com.unleqitq.jeat.internal.InternalUse;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.ToDoubleFunction;
 
 /**
  * This class contains helper methods to detect stagnation in the population.
@@ -66,15 +68,17 @@ public class StagnationHelper {
 	 * <b style="color:red;">Important: This method should only be called after the fitness of all genomes are set.</b>
 	 *
 	 * @param addToHistory If {@code true}, the stagnation fitness of all species will be added to their history.
+	 * @param aggregationFunction The function to calculate the fitness of a species. (This is for the general fitness of the species and not the stagnation fitness)
 	 * @return The Collection of all species that were removed from the population.
 	 */
 	@NotNull
-	public Collection<Species> stagnate(boolean addToHistory) {
+	public Collection<Species> stagnate(boolean addToHistory,
+		@NotNull ToDoubleFunction<Collection<Genome>> aggregationFunction) {
 		// Recalculate the stagnation fitness of all species
 		updateStagnationFitness();
 		
 		// Get all stagnated species
-		Collection<Species> stagnatedSpecies = getStagnatedSpecies();
+		Collection<Species> stagnatedSpecies = getStagnatedSpecies(aggregationFunction);
 		
 		// Add the stagnation fitness to the history
 		// This should be done after the stagnated species are determined
@@ -91,18 +95,25 @@ public class StagnationHelper {
 	 * This method respects the {@link com.unleqitq.jeat.config.StagnationConfig#speciesElitism} setting.<br>
 	 * <b style="color:red;">Important: This method should be called before the history is updated.</b>
 	 *
+	 * @param aggregationFunction The function to calculate the fitness of a species. (This is for the general fitness of the species and not the stagnation fitness)
 	 * @return A Collection of all species in the population that are stagnated.
 	 */
 	@NotNull
-	public Collection<Species> getStagnatedSpecies() {
+	public Collection<Species> getStagnatedSpecies(
+		@NotNull ToDoubleFunction<Collection<Genome>> aggregationFunction) {
 		Set<Species> stagnatedSpecies = new HashSet<>();
 		
 		// Add all stagnated species to the collection
-		population.internalSpecies().values().stream().filter(this::isStagnated).forEach(stagnatedSpecies::add);
+		population.internalSpecies()
+			.values()
+			.stream()
+			.filter(this::isStagnated)
+			.forEach(stagnatedSpecies::add);
 		
 		// Remove the best species from the stagnated species list according to the elitism setting
 		int elitism = population.jeat().config().stagnation.speciesElitism;
-		if (elitism > 0) population.fittestSpecies(elitism).forEach(stagnatedSpecies::remove);
+		if (elitism > 0)
+			population.fittestSpecies(elitism, aggregationFunction).forEach(stagnatedSpecies::remove);
 		
 		return stagnatedSpecies;
 	}
