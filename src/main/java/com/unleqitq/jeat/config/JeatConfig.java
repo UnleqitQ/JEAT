@@ -87,4 +87,33 @@ public class JeatConfig {
 		}
 	}
 	
+	/**
+	 * Saves the configuration to an XML file.
+	 * @param file The file to save the configuration to.
+	 * @throws RuntimeException If an error occurs while saving the configuration.
+	 */
+	public void toXml(@NotNull File file) {
+		try {
+			JeatXmlConfigLoader.save(this, file);
+		}
+		catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Saves the configuration to XML.
+	 * @return The content of the configuration in XML.
+	 * @throws RuntimeException If an error occurs while saving the configuration.
+	 */
+	@NotNull
+	public String toXml() {
+		try {
+			return JeatXmlConfigLoader.save(this);
+		}
+		catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 }
