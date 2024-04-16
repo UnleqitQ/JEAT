@@ -126,6 +126,8 @@ public class StagnationHelper {
 	 */
 	public boolean isStagnated(@NotNull Species species) {
 		int maxStagnation = jeat.config().stagnation.maxStagnation;
+		// Species with fewer generations than the max stagnation are not stagnated
+		if (species.stagnationHistory().size() < maxStagnation) return false;
 		double fitness = species.stagnationFitness();
 		double highestFitness = getHighestFitness(species, maxStagnation, 0);
 		
