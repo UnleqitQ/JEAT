@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -37,7 +38,9 @@ public class JeatXmlConfigLoader {
 	public static void save(@NotNull JeatConfig config, @NotNull File file) throws JAXBException {
 		XmlJeatConfig xmlConfig = XmlJeatConfig.of(config);
 		JAXBContext context = JAXBContext.newInstance(XmlJeatConfig.class);
-		context.createMarshaller().marshal(xmlConfig, file);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		marshaller.marshal(xmlConfig, file);
 	}
 	
 	/**
@@ -64,7 +67,9 @@ public class JeatXmlConfigLoader {
 		XmlJeatConfig xmlConfig = XmlJeatConfig.of(config);
 		JAXBContext context = JAXBContext.newInstance(XmlJeatConfig.class);
 		StringWriter writer = new StringWriter();
-		context.createMarshaller().marshal(xmlConfig, writer);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		marshaller.marshal(xmlConfig, writer);
 		return writer.toString();
 	}
 	
