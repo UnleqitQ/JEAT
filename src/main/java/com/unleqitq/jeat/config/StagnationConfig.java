@@ -39,4 +39,12 @@ public class StagnationConfig {
 	@Builder.Default
 	public int speciesElitism = 3;
 	
+	/**
+	 * The minimum amount of improvement required to reset the stagnation counter
+	 * <p>
+	 * Default: 0.01
+	 */
+	@Builder.Default
+	public double improvementThreshold = 0.01;
+	
 }

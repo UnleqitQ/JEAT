@@ -129,9 +129,21 @@ public class StagnationHelper {
 		// Species with fewer generations than the max stagnation are not stagnated
 		if (species.stagnationHistory().size() < maxStagnation) return false;
 		double fitness = species.stagnationFitness();
-		double highestFitness = getHighestFitness(species, maxStagnation, 0);
 		
-		return fitness <= highestFitness;
+		double lastFitness =
+			species.stagnationHistory().get(species.stagnationHistory().size() - maxStagnation);
+		double improvementThreshold = jeat.config().stagnation.improvementThreshold;
+		double totalImprovement = 0;
+		for (int i = 1; i < maxStagnation + 1; i++) {
+			double currentFitness;
+			if (i == maxStagnation) currentFitness = fitness;
+			else currentFitness =
+				species.stagnationHistory().get(species.stagnationHistory().size() - maxStagnation + i);
+			totalImprovement += Math.max(0, currentFitness - lastFitness);
+			if (currentFitness > lastFitness) lastFitness = currentFitness;
+		}
+		
+		return totalImprovement < improvementThreshold;
 	}
 	
 	/**
@@ -159,6 +171,33 @@ public class StagnationHelper {
 		
 		// get the highest fitness in the history
 		return history.stream().max(Double::compare).orElse(Double.NEGATIVE_INFINITY);
+	}
+	
+	/**
+	 * Gets the lowest fitness of the species in the given time span in the history,
+	 * offset by the given offset value.<br>
+	 * If there are no values in the desired time span, {@link Double#POSITIVE_INFINITY} is returned.
+	 *
+	 * @param species The species to check.
+	 * @param timeSpan The time span to check.
+	 * @param offset The offset to apply to the time span.
+	 * @return The lowest fitness of the species in the given time span.
+	 */
+	private double getLowestFitness(@NotNull Species species, int timeSpan, int offset) {
+		// get the history of the species
+		// newer values are at the end of the list
+		List<Double> stagnationHistory = species.stagnationHistory();
+		
+		// get the sublist of the history that is relevant for the time span
+		int endIndex = Math.max(0, stagnationHistory.size() - offset);
+		int startIndex = Math.max(0, endIndex - timeSpan);
+		// check if the clamped time span is valid
+		if (startIndex >= endIndex) return Double.POSITIVE_INFINITY;
+		// get the relevant history
+		List<Double> history = stagnationHistory.subList(startIndex, endIndex);
+		
+		// get the lowest fitness in the history
+		return history.stream().min(Double::compare).orElse(Double.POSITIVE_INFINITY);
 	}
 	
 }
