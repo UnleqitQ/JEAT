@@ -541,4 +541,18 @@ public class Population {
 		return Collections.unmodifiableCollection(species.values());
 	}
 	
+	/**
+	 * Method to get the species the genome belongs to.
+	 * @param genome The genome to get the species of.
+	 * @return The species the genome belongs to, or {@code null} if the genome is not in any species.
+	 */
+	@Nullable
+	public Species speciesOf(@NotNull Genome genome) {
+		return species.values()
+			.stream()
+			.filter(s -> s.getGenomes().contains(genome))
+			.findFirst()
+			.orElse(null);
+	}
+	
 }
