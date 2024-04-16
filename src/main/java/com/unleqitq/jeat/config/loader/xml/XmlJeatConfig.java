@@ -1,12 +1,17 @@
 package com.unleqitq.jeat.config.loader.xml;
 
+import com.unleqitq.jeat.activationFunction.ActivationFunction;
+import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.config.JeatConfig;
 import com.unleqitq.jeat.genetics.genome.Genome;
+import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Collection;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 
 @XmlRootElement (name = "jeat")
@@ -31,10 +36,15 @@ public class XmlJeatConfig {
 	@XmlElement (name = "stagnation")
 	public XmlStagnationConfig stagnation;
 	
-	public static XmlJeatConfig of(JeatConfig config) {
+	@NotNull
+	public static XmlJeatConfig of(@NotNull JeatConfig config,
+		@NotNull Function<ActivationFunction, String> activationFunctionNameMapper,
+		@NotNull Function<AggregationFunction, String> aggregationFunctionNameMapper) {
 		XmlJeatConfig xmlConfig = new XmlJeatConfig();
 		xmlConfig.mutation = XmlMutationConfig.of(config.mutation);
-		xmlConfig.initialStructure = XmlInitialStructureConfig.of(config.initialStructure);
+		xmlConfig.initialStructure =
+			XmlInitialStructureConfig.of(config.initialStructure, activationFunctionNameMapper,
+				aggregationFunctionNameMapper);
 		xmlConfig.crossover = XmlCrossoverConfig.of(config.crossover);
 		xmlConfig.species = XmlSpeciesConfig.of(config.species);
 		xmlConfig.distance = XmlDistanceConfig.of(config.distance);
@@ -42,10 +52,13 @@ public class XmlJeatConfig {
 		return xmlConfig;
 	}
 	
-	public JeatConfig to(ToDoubleFunction<Collection<Genome>> stagnationFitnessFunction) {
+	@NotNull
+	public JeatConfig to(@NotNull Map<String, ActivationFunction> activationFunctions,
+		@NotNull Map<String, AggregationFunction> aggregationFunctions,
+		@NotNull ToDoubleFunction<Collection<Genome>> stagnationFitnessFunction) {
 		return JeatConfig.builder()
 			.mutation(mutation.to())
-			.initialStructure(initialStructure.to())
+			.initialStructure(initialStructure.to(activationFunctions, aggregationFunctions))
 			.crossover(crossover.to())
 			.species(species.to())
 			.distance(distance.to())
