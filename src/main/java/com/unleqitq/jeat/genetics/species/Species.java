@@ -146,6 +146,15 @@ public class Species implements Comparable<Species> {
 	}
 	
 	/**
+	 * Get the best genome in the species
+	 * @return The best genome in the species
+	 */
+	@Nullable
+	public Genome best() {
+		return this.genomes.values().stream().max(Comparator.comparing(Genome::fitness)).orElse(null);
+	}
+	
+	/**
 	 * Get the number of genomes in the species
 	 * @return The number of genomes in the species
 	 */
