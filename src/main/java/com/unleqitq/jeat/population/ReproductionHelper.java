@@ -47,7 +47,7 @@ public class ReproductionHelper {
 	 * Resets the fitness of all species in the population.
 	 */
 	public void resetFitness() {
-		population.species().values().forEach(Species::resetFitness);
+		population.internalSpecies().values().forEach(Species::resetFitness);
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class ReproductionHelper {
 	 * @param aggregationFunction The function to aggregate the fitness of all genomes in a species.
 	 */
 	public void calculateFitness(ToDoubleFunction<Collection<Genome>> aggregationFunction) {
-		population.species().values().forEach(species -> species.calculateFitness(aggregationFunction));
+		population.internalSpecies().values().forEach(species -> species.calculateFitness(aggregationFunction));
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class ReproductionHelper {
 		// Save the best genomes
 		{
 			int savedGenomeAmount = (int) (population.populationSize() * config.elitismRatio);
-			List<Genome> sortedGenomes = population.genomes()
+			List<Genome> sortedGenomes = population.internalGenomes()
 				.values()
 				.stream()
 				.sorted(Comparator.comparingDouble(g -> -g.fitness()))
@@ -95,13 +95,13 @@ public class ReproductionHelper {
 			{
 				// First value: size, second value: amount of species with this size
 				int finalMinimalSpeciesSize = minimalSpeciesSize;
-				Map<Integer, Integer> speciesSizes = population.species()
+				Map<Integer, Integer> speciesSizes = population.internalSpecies()
 					.values()
 					.stream()
 					.map(Species::size)
 					.filter(size -> size < finalMinimalSpeciesSize)
 					.collect(Collectors.groupingBy(i -> i, Collectors.summingInt(i -> 1)));
-				int currentSpeciesAmount = (int) population.species()
+				int currentSpeciesAmount = (int) population.internalSpecies()
 					.values()
 					.stream()
 					.map(Species::size)
@@ -120,7 +120,7 @@ public class ReproductionHelper {
 			// Adjust the discard ratio
 			{
 				int finalMinimalSpeciesSize = minimalSpeciesSize;
-				int speciesAmount = (int) population.species()
+				int speciesAmount = (int) population.internalSpecies()
 					.values()
 					.stream()
 					.filter(species -> species.size() >= finalMinimalSpeciesSize)
@@ -133,8 +133,8 @@ public class ReproductionHelper {
 		
 		// Discard the worst species
 		{
-			int discardAmount = (int) (population.species().size() * discardRatio);
-			List<Species> sortedSpecies = population.species()
+			int discardAmount = (int) (population.internalSpecies().size() * discardRatio);
+			List<Species> sortedSpecies = population.internalSpecies()
 				.values()
 				.stream()
 				.sorted(Comparator.comparingDouble(Species::fitness))
@@ -311,7 +311,7 @@ public class ReproductionHelper {
 	 */
 	@NotNull
 	private List<Species> collectParentSpecies(int minimalSpeciesSize) {
-		return population.species()
+		return population.internalSpecies()
 			.values()
 			.stream()
 			.filter(species -> species.size() >= minimalSpeciesSize)
@@ -331,7 +331,7 @@ public class ReproductionHelper {
 		// No need to copy the genomes, as they will only be modified after the reproduction
 		
 		List<Genome> survivingGenomes = new ArrayList<>();
-		population.species().values().forEach(species -> {
+		population.internalSpecies().values().forEach(species -> {
 			int survivalAmount = (int) (Math.ceil(species.size() * config.survivalRate));
 			List<Genome> sortedGenomes = sortedGenomesBySpecies.get(species.id());
 			survivingGenomes.addAll(sortedGenomes.subList(0, survivalAmount));
@@ -430,7 +430,7 @@ public class ReproductionHelper {
 		Set<Genome> savedGenomes = new HashSet<>();
 		// Prepare the population for reproduction
 		int minimalSpeciesSize = preReproduction(config, savedGenomes);
-		Map<UUID, List<Genome>> presortedGenomes = population.species()
+		Map<UUID, List<Genome>> presortedGenomes = population.internalSpecies()
 			.values()
 			.stream()
 			.collect(Collectors.toMap(Species::id, s -> s.getGenomes()

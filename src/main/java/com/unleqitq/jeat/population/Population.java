@@ -4,9 +4,9 @@ import com.unleqitq.jeat.Jeat;
 import com.unleqitq.jeat.calculator.Calculator;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import com.unleqitq.jeat.genetics.species.Species;
+import com.unleqitq.jeat.internal.InternalUse;
 import com.unleqitq.jeat.utils.tuple.Pair;
 import com.unleqitq.jeat.utils.tuple.Tuple;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,6 @@ public class Population {
 	 * The genomes in this population.
 	 */
 	@NotNull
-	@Getter (AccessLevel.PACKAGE)
 	private final Map<UUID, Genome> genomes = new HashMap<>();
 	/**
 	 * A sorted list of genomes in this population.
@@ -40,7 +39,6 @@ public class Population {
 	 * The species in this population.
 	 */
 	@NotNull
-	@Getter (AccessLevel.PACKAGE)
 	private final Map<UUID, Species> species = new HashMap<>();
 	/**
 	 * A sorted list of species in this population.
@@ -503,6 +501,44 @@ public class Population {
 	@NotNull
 	public Collection<Calculator> createCalculators() {
 		return this.genomes.values().stream().map(Calculator::create).toList();
+	}
+	
+	/**
+	 * Internal method to get the genomes in this population.
+	 * @return The genomes in this population.
+	 */
+	@InternalUse
+	@NotNull
+	Map<UUID, Genome> internalGenomes() {
+		return genomes;
+	}
+	
+	/**
+	 * Internal method to get the species in this population.
+	 * @return The species in this population.
+	 */
+	@InternalUse
+	@NotNull
+	Map<UUID, Species> internalSpecies() {
+		return species;
+	}
+	
+	/**
+	 * Method to get an unmodifiable collection of the genomes in this population.
+	 * @return The genomes in this population.
+	 */
+	@NotNull
+	public Collection<Genome> genomes() {
+		return Collections.unmodifiableCollection(genomes.values());
+	}
+	
+	/**
+	 * Method to get an unmodifiable collection of the species in this population.
+	 * @return The species in this population.
+	 */
+	@NotNull
+	public Collection<Species> species() {
+		return Collections.unmodifiableCollection(species.values());
 	}
 	
 }

@@ -41,14 +41,14 @@ public class StagnationHelper {
 	 * Resets the stagnation fitness of all species in the population.
 	 */
 	public void resetStagnationFitness() {
-		population.species().values().forEach(Species::resetStagnationFitness);
+		population.internalSpecies().values().forEach(Species::resetStagnationFitness);
 	}
 	
 	/**
 	 * Updates the stagnation fitness of all species in the population.
 	 */
 	public void updateStagnationFitness() {
-		population.species().values().forEach(Species::calculateStagnationFitness);
+		population.internalSpecies().values().forEach(Species::calculateStagnationFitness);
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class StagnationHelper {
 	 * <b style="color:red;">Important: This method should be called after the stagnated species are determined.</b>
 	 */
 	public void addToHistory() {
-		population.species().values().forEach(Species::storeStagnationFitness);
+		population.internalSpecies().values().forEach(Species::storeStagnationFitness);
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public class StagnationHelper {
 		Set<Species> stagnatedSpecies = new HashSet<>();
 		
 		// Add all stagnated species to the collection
-		population.species().values().stream().filter(this::isStagnated).forEach(stagnatedSpecies::add);
+		population.internalSpecies().values().stream().filter(this::isStagnated).forEach(stagnatedSpecies::add);
 		
 		// Remove the best species from the stagnated species list according to the elitism setting
 		int elitism = population.jeat().config().stagnation.speciesElitism;

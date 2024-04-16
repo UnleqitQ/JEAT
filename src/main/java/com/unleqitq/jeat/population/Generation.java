@@ -67,11 +67,11 @@ public class Generation {
 	 */
 	@NotNull
 	public static Generation create(@NotNull Population population) {
-		Map<UUID, Genome> genomes = population.genomes()
+		Map<UUID, Genome> genomes = population.internalGenomes()
 			.values()
 			.stream()
 			.collect(Collectors.toMap(Genome::id, g -> g.copy(true)));
-		Map<UUID, Species> species = population.species()
+		Map<UUID, Species> species = population.internalSpecies()
 			.values()
 			.stream()
 			.collect(Collectors.toMap(Species::id, s -> s.copy(true, genomes)));
