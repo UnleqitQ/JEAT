@@ -1,5 +1,6 @@
 package com.unleqitq.jeat.genetics.gene.node.input;
 
+import com.unleqitq.jeat.Jeat;
 import com.unleqitq.jeat.genetics.gene.node.NodeGene;
 import com.unleqitq.jeat.genetics.genome.Genome;
 import com.unleqitq.jeat.internal.GlobalSettings;
@@ -36,8 +37,8 @@ public class InputNodeGene extends NodeGene<InputNodeGene, InputNodeGeneDefiniti
 						"Cannot compare different node types. (%s, %s)".formatted(getClass().getName(),
 							other.getClass().getName()));
 				case WARN:
-					System.err.printf("(JEAT) [WARN] Cannot compare different node types. (%s, %s)%n",
-						getClass().getName(), other.getClass().getName());
+					Jeat.LOGGER.warn("Cannot compare different node types. ({}, {})", getClass().getName(),
+						other.getClass().getName());
 				case IGNORE:
 					return 0.0;
 			}

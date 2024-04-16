@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
@@ -24,6 +26,8 @@ import java.util.Random;
 @Accessors (fluent = true)
 @Getter
 public class Jeat {
+	
+	public static final Logger LOGGER = LoggerFactory.getLogger(Jeat.class);
 	
 	/**
 	 * The default activation function.

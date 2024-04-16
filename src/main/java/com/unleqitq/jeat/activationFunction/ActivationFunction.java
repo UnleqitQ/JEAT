@@ -35,11 +35,14 @@ public interface ActivationFunction {
 	 * @param parameters1 the first set of parameters
 	 * @param parameters2 the second set of parameters
 	 */
-	default double distance(@NotNull Collection<IParameter> parameters1, @NotNull Collection<IParameter> parameters2) {
+	default double distance(@NotNull Collection<IParameter> parameters1,
+		@NotNull Collection<IParameter> parameters2) {
 		double distance = 0;
 		for (IParameter parameter1 : parameters1) {
-			IParameter parameter2 = parameters2.stream().filter(p -> p.name().equals(parameter1.name()))
-				.findFirst().orElse(null);
+			IParameter parameter2 = parameters2.stream()
+				.filter(p -> p.name().equals(parameter1.name()))
+				.findFirst()
+				.orElse(null);
 			if (parameter2 != null) {
 				distance += Math.abs(parameter1.value() - parameter2.value());
 			}
@@ -196,13 +199,20 @@ public interface ActivationFunction {
 			if (jeat.random().nextDouble() < definition.mutationChance()) {
 				double newValue;
 				int tries = 0;
-				do {
-					newValue = Math.clamp(value + jeat.random().nextDouble(-definition.mutationRange(),
-						definition.mutationRange()), definition.minValue(), definition.maxValue());
+				while (true) {
+					newValue = Math.clamp(value +
+							jeat.random().nextDouble(-definition.mutationRange(), definition.mutationRange()),
+						definition.minValue(), definition.maxValue());
 					if (tries++ > maxTries) {
+						Jeat.LOGGER.debug("Could not find a valid value for the parameter {} after {} tries",
+							name, maxTries);
 						return;
 					}
-				} while (definition.invalidValues().contains(newValue));
+					if (!definition.invalidValues().contains(newValue)) {
+						break;
+					}
+					Jeat.LOGGER.debug("Invalid value for parameter {}: {}", name, newValue);
+				}
 				value = newValue;
 			}
 		}

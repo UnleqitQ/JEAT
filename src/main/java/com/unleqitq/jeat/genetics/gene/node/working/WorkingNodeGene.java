@@ -1,5 +1,6 @@
 package com.unleqitq.jeat.genetics.gene.node.working;
 
+import com.unleqitq.jeat.Jeat;
 import com.unleqitq.jeat.activationFunction.ActivationFunction;
 import com.unleqitq.jeat.activationFunction.ActivationFunctionReference;
 import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
@@ -93,8 +94,8 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 						"Cannot compare different node types. (%s, %s)".formatted(getClass().getName(),
 							other.getClass().getName()));
 				case WARN:
-					System.err.printf("(JEAT) [WARN] Cannot compare different node types. (%s, %s)%n",
-						getClass().getName(), other.getClass().getName());
+					Jeat.LOGGER.warn("Cannot compare different node types. ({}, {})", getClass().getName(),
+						other.getClass().getName());
 				case IGNORE:
 					return 0.0;
 			}
