@@ -104,7 +104,7 @@ public class Genome implements Comparable<Genome> {
 			if (bias != null) {
 				switch (GlobalSettings.BIAS_ALREADY_EXISTS) {
 					case THROW -> throw new IllegalStateException("Bias node already exists");
-					case WARN -> System.err.println("(JEAT) [WARN] Bias node already exists");
+					case WARN -> Jeat.LOGGER.warn("Bias node already exists");
 				}
 			}
 			bias = (BiasNodeGene) node;

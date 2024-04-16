@@ -1,5 +1,6 @@
 package com.unleqitq.jeat.genetics.gene.node;
 
+import com.unleqitq.jeat.Jeat;
 import com.unleqitq.jeat.genetics.gene.GeneDefinition;
 import com.unleqitq.jeat.internal.GlobalSettings;
 import lombok.Getter;
@@ -45,7 +46,7 @@ public abstract class NodeGeneDefinition<S extends NodeGeneDefinition<S, G>, G e
 			if (message != null) {
 				switch (GlobalSettings.NODE_X_BOUNDS) {
 					case THROW -> throw new IllegalArgumentException(message);
-					case WARN -> System.err.println("(JEAT) [WARN] " + message);
+					case WARN -> Jeat.LOGGER.warn(message);
 				}
 			}
 		}
