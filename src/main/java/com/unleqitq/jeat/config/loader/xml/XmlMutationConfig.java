@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement (name = "mutation")
-@XmlType
+@XmlType (propOrder = {})
 public class XmlMutationConfig {
 	
 	@XmlElement (name = "node", required = true)
@@ -16,7 +16,7 @@ public class XmlMutationConfig {
 	@XmlElement (name = "connection", required = true)
 	public XmlConnectionMutationConfig connection;
 	
-	@XmlType
+	@XmlType (propOrder = {})
 	public static class XmlNodeMutationConfig {
 		
 		@XmlElement (name = "structure", required = true)
@@ -31,7 +31,7 @@ public class XmlMutationConfig {
 		@XmlElement (name = "response", required = true)
 		public XmlResponseMutationConfig response;
 		
-		@XmlType
+		@XmlType (propOrder = {})
 		public static class XmlNodeStructureMutationConfig {
 			
 			@XmlElement (name = "add", required = true)
@@ -40,7 +40,7 @@ public class XmlMutationConfig {
 			@XmlElement (name = "remove", required = true)
 			public double removeNodeChance;
 			
-			@XmlType
+			@XmlType (propOrder = {})
 			public static class XmlAddNodeMutationConfig {
 				
 				@XmlElement (name = "split", required = true)
@@ -56,7 +56,7 @@ public class XmlMutationConfig {
 			
 		}
 		
-		@XmlType
+		@XmlType (propOrder = {})
 		public static class XmlAggregationMutationConfig {
 			
 			@XmlElement (name = "change", required = true)
@@ -64,7 +64,7 @@ public class XmlMutationConfig {
 			
 		}
 		
-		@XmlType
+		@XmlType (propOrder = {})
 		public static class XmlActivationMutationConfig {
 			
 			@XmlElement (name = "change", required = true)
@@ -75,7 +75,7 @@ public class XmlMutationConfig {
 			
 		}
 		
-		@XmlType
+		@XmlType (propOrder = {})
 		public static class XmlResponseMutationConfig {
 			
 			@XmlElement (name = "chance", required = true)
@@ -94,7 +94,7 @@ public class XmlMutationConfig {
 		
 	}
 	
-	@XmlType
+	@XmlType (propOrder = {})
 	public static class XmlConnectionMutationConfig {
 		
 		@XmlElement (name = "structure", required = true)
@@ -103,7 +103,7 @@ public class XmlMutationConfig {
 		@XmlElement (name = "weight", required = true)
 		public XmlConnectionWeightMutationConfig weight;
 		
-		@XmlType
+		@XmlType (propOrder = {})
 		public static class XmlConnectionStructureMutationConfig {
 			
 			@XmlElement (name = "add", required = true)
@@ -117,7 +117,7 @@ public class XmlMutationConfig {
 			
 		}
 		
-		@XmlType
+		@XmlType (propOrder = {})
 		public static class XmlConnectionWeightMutationConfig {
 			
 			@XmlElement (name = "chance", required = true)

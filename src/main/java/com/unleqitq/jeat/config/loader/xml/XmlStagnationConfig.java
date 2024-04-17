@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.function.ToDoubleFunction;
 
 @XmlRootElement (name = "stagnation")
-@XmlType
+@XmlType (propOrder = {})
 public class XmlStagnationConfig {
 	
 	// the fitness function is provided as an additional parameter in java code

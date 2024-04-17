@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement (name = "distance")
-@XmlType
+@XmlType (propOrder = {})
 public class XmlDistanceConfig {
 	
 	@XmlElement (name = "node", required = true)
@@ -17,7 +17,7 @@ public class XmlDistanceConfig {
 	@XmlElement (name = "connection", required = true)
 	public XmlConnectionDistanceConfig connection;
 	
-	@XmlType
+	@XmlType (propOrder = {})
 	public static class XmlNodeDistanceConfig {
 		
 		@XmlElement (name = "disjoint", required = true)
@@ -40,7 +40,7 @@ public class XmlDistanceConfig {
 		
 	}
 	
-	@XmlType
+	@XmlType (propOrder = {})
 	public static class XmlConnectionDistanceConfig {
 		
 		@XmlElement (name = "disjoint", required = true)
