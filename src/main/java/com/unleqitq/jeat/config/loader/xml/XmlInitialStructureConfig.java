@@ -5,10 +5,7 @@ import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.config.InitialStructureConfig;
 import org.jetbrains.annotations.NotNull;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlList;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -17,12 +14,12 @@ import java.util.function.Function;
 @XmlType
 public class XmlInitialStructureConfig {
 	
-	@XmlElement (name = "input-nodes", required = true)
-	@XmlList
+	@XmlElement (name = "input-node", required = true)
+	@XmlElementWrapper (name = "input-nodes", required = true)
 	public List<XmlInputNodeConfig> inputNodes;
 	
-	@XmlElement (name = "output-nodes", required = true)
-	@XmlList
+	@XmlElement (name = "output-node", required = true)
+	@XmlElementWrapper (name = "output-nodes", required = true)
 	public List<XmlOutputNodeConfig> outputNodes;
 	
 	@XmlElement (name = "connection-density", required = true)
