@@ -75,8 +75,7 @@ public class Genome implements Comparable<Genome> {
 				.createGene(nc.name, this,
 					() -> new WorkingNodeGeneDefinition(nc.x, nc.name).removable(false)
 						.lockedActivationFunction(nc.lockedActivationFunction)
-						.lockedAggregationFunction(nc.lockedAggregationFunction)
-						.canDisable(nc.canDisable));
+						.lockedAggregationFunction(nc.lockedAggregationFunction));
 			addNode(node);
 			outputNodes.add(node.id());
 			for (UUID input : inputNodes) {
