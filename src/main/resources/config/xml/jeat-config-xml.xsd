@@ -46,7 +46,6 @@
     <xs:sequence>
       <xs:element name="add" type="xmlAddNodeMutationConfig"/>
       <xs:element name="remove" type="xs:double"/>
-      <xs:element name="toggle" type="xs:double"/>
     </xs:sequence>
   </xs:complexType>
 
