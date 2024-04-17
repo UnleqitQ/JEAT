@@ -1,5 +1,6 @@
 package com.unleqitq.jeat.config.loader.xml;
 
+import com.unleqitq.jeat.Jeat;
 import com.unleqitq.jeat.activationFunction.ActivationFunction;
 import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.config.JeatConfig;
@@ -11,7 +12,11 @@ import org.jetbrains.annotations.NotNull;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
@@ -85,6 +90,25 @@ public class JeatXmlConfigLoader {
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		marshaller.marshal(xmlConfig, writer);
 		return writer.toString();
+	}
+	
+	/**
+	 * Generate the schema of the XML file.
+	 * @param folder The folder to save the schema to.
+	 */
+	public static void generateSchema(File folder) throws JAXBException, IOException {
+		JAXBContext context = JAXBContext.newInstance(XmlJeatConfig.class);
+		context.generateSchema(new SchemaOutputResolver() {
+			@Override
+			public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException {
+				File file = new File(folder, suggestedFileName);
+				Jeat.LOGGER.debug("Generating file for schema ({}: {}): {}", namespaceUri,
+					suggestedFileName, file.getAbsolutePath());
+				StreamResult result = new StreamResult(file);
+				result.setSystemId(file.toURI().toString());
+				return result;
+			}
+		});
 	}
 	
 	@Builder
