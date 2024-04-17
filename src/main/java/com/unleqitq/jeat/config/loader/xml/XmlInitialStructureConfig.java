@@ -5,10 +5,8 @@ import com.unleqitq.jeat.aggregationFunction.AggregationFunction;
 import com.unleqitq.jeat.config.InitialStructureConfig;
 import org.jetbrains.annotations.NotNull;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import java.util.Arrays;
+import javax.xml.bind.annotation.*;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -16,11 +14,13 @@ import java.util.function.Function;
 @XmlType
 public class XmlInitialStructureConfig {
 	
-	@XmlElement (name = "input-nodes", required = true)
-	public XmlInputNodeConfig[] inputNodes;
+	@XmlElement (name = "input-node", required = true)
+	@XmlElementWrapper (name = "input-nodes", required = true)
+	public List<XmlInputNodeConfig> inputNodes;
 	
-	@XmlElement (name = "output-nodes", required = true)
-	public XmlOutputNodeConfig[] outputNodes;
+	@XmlElement (name = "output-node", required = true)
+	@XmlElementWrapper (name = "output-nodes", required = true)
+	public List<XmlOutputNodeConfig> outputNodes;
 	
 	@XmlElement (name = "connection-density", required = true)
 	public double connectionDensity = 0.5;
@@ -45,9 +45,6 @@ public class XmlInitialStructureConfig {
 		@XmlElement (name = "x", required = false)
 		public double x = 1;
 		
-		@XmlElement (name = "can-disable", required = false)
-		public boolean canDisable = false;
-		
 		@XmlElement (name = "activation-function", required = false)
 		public String activationFunction = null;
 		
@@ -65,7 +62,7 @@ public class XmlInitialStructureConfig {
 			xmlInputNode.name = inputNode.name;
 			xmlInputNode.x = inputNode.x;
 			return xmlInputNode;
-		}).toArray(XmlInputNodeConfig[]::new);
+		}).toList();
 		xmlConfig.outputNodes = config.outputNodes.stream().map(outputNode -> {
 			XmlOutputNodeConfig xmlOutputNode = new XmlOutputNodeConfig();
 			xmlOutputNode.name = outputNode.name;
@@ -75,7 +72,7 @@ public class XmlInitialStructureConfig {
 			if (outputNode.lockedAggregationFunction != null) xmlOutputNode.aggregationFunction =
 				aggregationFunctionMapper.apply(outputNode.lockedAggregationFunction);
 			return xmlOutputNode;
-		}).toArray(XmlOutputNodeConfig[]::new);
+		}).toList();
 		xmlConfig.connectionDensity = config.connectionDensity;
 		return xmlConfig;
 	}
@@ -86,17 +83,15 @@ public class XmlInitialStructureConfig {
 			throw new IllegalArgumentException("Input nodes and output nodes must be provided.");
 		}
 		return InitialStructureConfig.builder()
-			.inputNodes(Arrays.stream(inputNodes)
+			.inputNodes(inputNodes.stream()
 				.map(inputNode -> InitialStructureConfig.InputNodeConfig.builder()
 					.name(inputNode.name)
 					.x(inputNode.x)
 					.build())
 				.toList())
-			.outputNodes(Arrays.stream(outputNodes).map(outputNode -> {
+			.outputNodes(outputNodes.stream().map(outputNode -> {
 				InitialStructureConfig.OutputNodeConfig.OutputNodeConfigBuilder builder =
-					InitialStructureConfig.OutputNodeConfig.builder()
-						.name(outputNode.name)
-						.x(outputNode.x);
+					InitialStructureConfig.OutputNodeConfig.builder().name(outputNode.name).x(outputNode.x);
 				if (outputNode.activationFunction != null)
 					builder.lockedActivationFunction(activationFunctions.get(outputNode.activationFunction));
 				if (outputNode.aggregationFunction != null) builder.lockedAggregationFunction(
