@@ -40,9 +40,6 @@ public class XmlMutationConfig {
 			@XmlElement (name = "remove", required = true)
 			public double removeNodeChance;
 			
-			@XmlElement (name = "toggle", required = true)
-			public double toggleNodeChance;
-			
 			@XmlType
 			public static class XmlAddNodeMutationConfig {
 				
