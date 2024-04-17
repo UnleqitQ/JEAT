@@ -141,10 +141,6 @@ public class Calculator {
 			if (from == null || to == null) {
 				throw new IllegalArgumentException("Connection gene references non-existent neuron");
 			}
-			if (from instanceof DisabledNeuron || to instanceof DisabledNeuron) {
-				// Don't create connections to or from disabled neurons
-				continue;
-			}
 			if (to instanceof WorkingNeuron) {
 				((WorkingNeuron) to).addConnection(new Connection(from, gene.weight()));
 			}
@@ -154,23 +150,6 @@ public class Calculator {
 			}
 		}
 		return calculator;
-	}
-	
-	/**
-	 * This is only used for the creation of the neural network from the genome.
-	 * They are not added to the network in the first place.
-	 */
-	private static class DisabledNeuron extends Neuron {
-		
-		DisabledNeuron(@NotNull NodeGene<?, ?> gene) {
-			super(gene);
-		}
-		
-		@Override
-		public double getValue() {
-			throw new IllegalStateException("Disabled neurons cannot be used");
-		}
-		
 	}
 	
 }
