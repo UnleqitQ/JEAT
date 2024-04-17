@@ -77,13 +77,6 @@ public class InitialStructureConfig {
 		public AggregationFunction lockedAggregationFunction = null;
 		
 		/**
-		 * If the node can be disabled.<br>
-		 * (should be false, but you could do it if you want)
-		 */
-		@Builder.Default
-		public boolean canDisable = false;
-		
-		/**
 		 * The x value of the node. (Default is 1)
 		 */
 		@Builder.Default

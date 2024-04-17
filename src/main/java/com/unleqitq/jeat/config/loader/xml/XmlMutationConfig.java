@@ -160,7 +160,6 @@ public class XmlMutationConfig {
 		xmlConfig.node.structure.add.combineOutputsChance =
 			config.node.structure.add.combineOutputsChance;
 		xmlConfig.node.structure.removeNodeChance = config.node.structure.removeNodeChance;
-		xmlConfig.node.structure.toggleNodeChance = config.node.structure.toggleNodeChance;
 		xmlConfig.node.aggregation.changeAggregationFunctionChance =
 			config.node.aggregation.changeAggregationFunctionChance;
 		xmlConfig.node.activation.changeActivationFunctionChance =
@@ -211,7 +210,6 @@ public class XmlMutationConfig {
 							.combineOutputsChance(node.structure.add.combineOutputsChance)
 							.build())
 					.removeNodeChance(node.structure.removeNodeChance)
-					.toggleNodeChance(node.structure.toggleNodeChance)
 					.build())
 				.aggregation(MutationConfig.NodeMutationConfig.AggregationMutationConfig.builder()
 					.changeAggregationFunctionChance(node.aggregation.changeAggregationFunctionChance)

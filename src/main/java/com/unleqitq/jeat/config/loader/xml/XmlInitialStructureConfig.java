@@ -70,7 +70,6 @@ public class XmlInitialStructureConfig {
 			XmlOutputNodeConfig xmlOutputNode = new XmlOutputNodeConfig();
 			xmlOutputNode.name = outputNode.name;
 			xmlOutputNode.x = outputNode.x;
-			xmlOutputNode.canDisable = outputNode.canDisable;
 			if (outputNode.lockedActivationFunction != null) xmlOutputNode.activationFunction =
 				activationFunctionMapper.apply(outputNode.lockedActivationFunction);
 			if (outputNode.lockedAggregationFunction != null) xmlOutputNode.aggregationFunction =
@@ -97,8 +96,7 @@ public class XmlInitialStructureConfig {
 				InitialStructureConfig.OutputNodeConfig.OutputNodeConfigBuilder builder =
 					InitialStructureConfig.OutputNodeConfig.builder()
 						.name(outputNode.name)
-						.x(outputNode.x)
-						.canDisable(outputNode.canDisable);
+						.x(outputNode.x);
 				if (outputNode.activationFunction != null)
 					builder.lockedActivationFunction(activationFunctions.get(outputNode.activationFunction));
 				if (outputNode.aggregationFunction != null) builder.lockedAggregationFunction(
