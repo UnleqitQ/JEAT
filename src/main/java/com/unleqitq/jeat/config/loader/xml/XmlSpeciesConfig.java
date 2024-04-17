@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement (name = "species")
-@XmlType
+@XmlType (propOrder = {})
 public class XmlSpeciesConfig {
 	
 	@XmlElement (name = "compatibility-threshold", required = true)

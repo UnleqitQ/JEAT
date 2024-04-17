@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @XmlRootElement
-@XmlType
+@XmlType (propOrder = {})
 public class XmlInitialStructureConfig {
 	
 	@XmlElement (name = "input-node", required = true)
@@ -25,7 +25,7 @@ public class XmlInitialStructureConfig {
 	@XmlElement (name = "connection-density", required = true)
 	public double connectionDensity = 0.5;
 	
-	@XmlType
+	@XmlType (propOrder = {})
 	public static class XmlInputNodeConfig {
 		
 		@XmlElement (name = "name", required = true)
@@ -36,7 +36,7 @@ public class XmlInitialStructureConfig {
 		
 	}
 	
-	@XmlType
+	@XmlType (propOrder = {})
 	public static class XmlOutputNodeConfig {
 		
 		@XmlElement (name = "name", required = true)

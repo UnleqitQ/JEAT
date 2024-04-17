@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement (name = "crossover")
-@XmlType
+@XmlType (propOrder = {})
 public class XmlCrossoverConfig {
 	
 	@XmlElement (name = "geneInheritanceProbability", required = true)

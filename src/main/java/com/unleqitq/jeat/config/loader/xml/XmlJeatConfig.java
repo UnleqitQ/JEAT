@@ -15,7 +15,7 @@ import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 
 @XmlRootElement (name = "jeat")
-@XmlType
+@XmlType (propOrder = {})
 public class XmlJeatConfig {
 	
 	@XmlElement (name = "mutation")

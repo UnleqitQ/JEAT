@@ -16,45 +16,45 @@
   <xs:element name="xmlInitialStructureConfig" type="xmlInitialStructureConfig"/>
 
   <xs:complexType name="xmlJeatConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element ref="mutation" minOccurs="0"/>
       <xs:element name="initial-structure" type="xmlInitialStructureConfig" minOccurs="0"/>
       <xs:element ref="crossover" minOccurs="0"/>
       <xs:element ref="species" minOccurs="0"/>
       <xs:element ref="distance" minOccurs="0"/>
       <xs:element ref="stagnation" minOccurs="0"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlMutationConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="node" type="xmlNodeMutationConfig"/>
       <xs:element name="connection" type="xmlConnectionMutationConfig"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlNodeMutationConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="structure" type="xmlNodeStructureMutationConfig"/>
       <xs:element name="aggregation" type="xmlAggregationMutationConfig"/>
       <xs:element name="activation" type="xmlActivationMutationConfig"/>
       <xs:element name="response" type="xmlResponseMutationConfig"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlNodeStructureMutationConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="add" type="xmlAddNodeMutationConfig"/>
       <xs:element name="remove" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlAddNodeMutationConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="split" type="xs:double"/>
       <xs:element name="combine-inputs" type="xs:double"/>
       <xs:element name="combine-outputs" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlAggregationMutationConfig">
@@ -64,47 +64,47 @@
   </xs:complexType>
 
   <xs:complexType name="xmlActivationMutationConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="change" type="xs:double"/>
       <xs:element name="change-parameters" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlResponseMutationConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="chance" type="xs:double"/>
       <xs:element name="range" type="xs:double"/>
       <xs:element name="has-bounds" type="xs:boolean"/>
       <xs:element name="bounds" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlConnectionMutationConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="structure" type="xmlConnectionStructureMutationConfig"/>
       <xs:element name="weight" type="xmlConnectionWeightMutationConfig"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlConnectionStructureMutationConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="add" type="xs:double"/>
       <xs:element name="remove" type="xs:double"/>
       <xs:element name="toggle" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlConnectionWeightMutationConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="chance" type="xs:double"/>
       <xs:element name="range" type="xs:double"/>
       <xs:element name="random-chance" type="xs:double"/>
       <xs:element name="random-range" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlInitialStructureConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="input-nodes">
         <xs:complexType>
           <xs:sequence>
@@ -120,31 +120,31 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="connection-density" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlInputNodeConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="name" type="xs:string"/>
       <xs:element name="x" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlOutputNodeConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="name" type="xs:string"/>
       <xs:element name="x" type="xs:double"/>
       <xs:element name="activation-function" type="xs:string" minOccurs="0"/>
       <xs:element name="aggregation-function" type="xs:string" minOccurs="0"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlCrossoverConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="geneInheritanceProbability" type="xs:double"/>
       <xs:element name="thinOutConnections" type="xs:boolean"/>
       <xs:element name="thinOutPercentage" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlSpeciesConfig">
@@ -154,37 +154,37 @@
   </xs:complexType>
 
   <xs:complexType name="xmlDistanceConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="node" type="xmlNodeDistanceConfig"/>
       <xs:element name="connection" type="xmlConnectionDistanceConfig"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlNodeDistanceConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="disjoint" type="xs:double"/>
       <xs:element name="activation" type="xs:double"/>
       <xs:element name="activation-parameter" type="xs:double"/>
       <xs:element name="aggregation" type="xs:double"/>
       <xs:element name="response" type="xs:double"/>
       <xs:element name="max-response-difference" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlConnectionDistanceConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="disjoint" type="xs:double"/>
       <xs:element name="weight" type="xs:double"/>
       <xs:element name="max-weight-difference" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="xmlStagnationConfig">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="max-stagnation" type="xs:int"/>
       <xs:element name="species-elitism" type="xs:int"/>
       <xs:element name="improvement-threshold" type="xs:double"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 </xs:schema>
 
