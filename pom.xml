@@ -99,8 +99,8 @@
 	<distributionManagement>
 		<repository>
 			<id>github</id>
-			<name>GitHub Packages</name>
-			<url>https://maven.pkg.github.com/unleqitq/JEAT</url>
+			<name>GitHub UnleqitQ Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/UnleqitQ/JEAT</url>
 		</repository>
 	</distributionManagement>
 
