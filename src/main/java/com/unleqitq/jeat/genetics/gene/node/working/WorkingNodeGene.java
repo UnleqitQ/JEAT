@@ -22,7 +22,6 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 	
 	private ActivationFunctionReference activationFunction;
 	private AggregationFunction aggregationFunction;
-	private boolean enabled = true;
 	private double response = 1.0;
 	
 	public WorkingNodeGene(@NotNull Genome genome, @NotNull WorkingNodeGeneDefinition definition) {
@@ -62,9 +61,6 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 			aggregationFunction =
 				jeat().aggregationFunctions().getRandomElement(rnd, aggregationFunction);
 		}
-		if (definition().canDisable() && rnd.nextDouble() < config.structure.toggleNodeChance) {
-			enabled = !enabled;
-		}
 		if (rnd.nextDouble() < config.response.mutateResponseChance) {
 			response +=
 				rnd.nextDouble(-config.response.mutateResponseRange, config.response.mutateResponseRange);
@@ -78,7 +74,6 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 	@NotNull
 	public WorkingNodeGene copy(@NotNull Genome genome) {
 		WorkingNodeGene copy = new WorkingNodeGene(genome, definition());
-		copy.enabled = enabled;
 		copy.activationFunction = activationFunction.copy();
 		copy.aggregationFunction = aggregationFunction;
 		copy.response = response;
@@ -102,8 +97,6 @@ public class WorkingNodeGene extends NodeGene<WorkingNodeGene, WorkingNodeGeneDe
 		}
 		WorkingNodeGene o = (WorkingNodeGene) other;
 		double distance = 0.0;
-		if (enabled != o.enabled) return jeat().config().distance.node.disjointCoefficient;
-		if (!enabled) return 0.0;
 		if (activationFunction.activationFunction().equals(o.activationFunction.activationFunction())) {
 			distance += jeat().config().distance.node.activationFunctionParameterCoefficient *
 				activationFunction.activationFunction()

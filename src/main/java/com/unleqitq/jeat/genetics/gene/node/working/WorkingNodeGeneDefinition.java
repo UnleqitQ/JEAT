@@ -23,7 +23,6 @@ public class WorkingNodeGeneDefinition
 	private ActivationFunction lockedActivationFunction;
 	@Nullable
 	private AggregationFunction lockedAggregationFunction;
-	private boolean canDisable = true;
 	private boolean removable = true;
 	
 	public WorkingNodeGeneDefinition(@NotNull UUID id, double x, @Nullable String name) {

@@ -64,11 +64,6 @@ public class MutationConfig {
 			 */
 			@Builder.Default
 			public double removeNodeChance = 0.01;
-			/**
-			 * The chance of toggling a node.
-			 */
-			@Builder.Default
-			public double toggleNodeChance = 0.05;
 			
 			@Builder
 			public static class AddNodeMutationConfig {
