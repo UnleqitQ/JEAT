@@ -122,10 +122,6 @@ public class Calculator {
 					neuronIdMap.put(i.id(), neuron);
 				}
 				case WorkingNodeGene w -> {
-					if (!w.enabled()) {
-						neuronIdMap.put(w.id(), new DisabledNeuron(w));
-						break;
-					}
 					WorkingNeuron neuron = new WorkingNeuron(w);
 					calculator.addNeuron(neuron);
 					if (w.name() != null) calculator.outputNeurons.add(neuron);
