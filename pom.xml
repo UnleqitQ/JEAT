@@ -6,7 +6,7 @@
 
 	<groupId>com.unleqitq</groupId>
 	<artifactId>JEAT</artifactId>
-	<version>1.3.1-SNAPSHOT</version>
+	<version>1.3.2-SNAPSHOT</version>
 	<name>JEAT</name>
 
 	<properties>
@@ -98,10 +98,13 @@
 
 	<distributionManagement>
 		<repository>
-			<id>github</id>
-			<name>GitHub UnleqitQ Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/UnleqitQ/JEAT</url>
+			<id>unleqitq-nexus</id>
+			<url>https://nexus.unleqitq.com/repository/maven-releases/</url>
 		</repository>
+		<snapshotRepository>
+			<id>unleqitq-nexus-snapshots</id>
+			<url>https://nexus.unleqitq.com/repository/maven-snapshots/</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 	<dependencies>
